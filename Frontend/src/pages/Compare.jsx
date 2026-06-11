@@ -104,54 +104,95 @@ export default function Compare() {
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : (
-        <div className="mt-6 overflow-x-auto rounded-2xl border border-border bg-card">
-          <table className="w-full min-w-[680px] text-left text-sm">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="w-48 p-5 text-xs uppercase tracking-wider text-muted-foreground">Attribute</th>
-                {items.map((c) => (
-                  <th key={c.id} className="p-5">
-                    <div className="flex items-start justify-between gap-2">
-                      <Link to={`/colleges/${c.id}`} className="block">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-primary font-bold text-primary-foreground">
-                          {getCollegeShortName(c)}
-                        </div>
-                        <div className="mt-3 font-display text-base font-semibold hover:text-primary">{getCollegeDisplayName(c)}</div>
-                        <div className="mt-1 text-xs font-normal text-muted-foreground">{getCollegeLocation(c)}</div>
-                      </Link>
-                      <button onClick={() => toggle(c.id)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Remove">
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </th>
-                ))}
-                {items.length < 4 && (
-                  <th className="w-48 p-5">
-                    <button
-                      onClick={() => setPicker(true)}
-                      className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border py-8 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary"
-                    >
-                      <Plus className="h-5 w-5" /> Add college
-                    </button>
-                  </th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={row.label} className="border-b border-border/60 last:border-0">
-                  <td className="p-5 align-top text-xs font-semibold uppercase tracking-wider text-muted-foreground">{row.label}</td>
+        <>
+          {/* Desktop Table */}
+          <div className="mt-6 hidden overflow-x-auto rounded-2xl border border-border bg-card md:block">
+            <table className="w-full min-w-[680px] text-left text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="w-48 p-5 text-xs uppercase tracking-wider text-muted-foreground">Attribute</th>
                   {items.map((c) => (
-                    <td key={c.id} className="p-5 align-top text-sm text-foreground/80">
-                      {row.render(c)}
-                    </td>
+                    <th key={c.id} className="p-5">
+                      <div className="flex items-start justify-between gap-2">
+                        <Link to={`/colleges/${c.id}`} className="block">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-primary font-bold text-primary-foreground">
+                            {getCollegeShortName(c)}
+                          </div>
+                          <div className="mt-3 font-display text-base font-semibold hover:text-primary">{getCollegeDisplayName(c)}</div>
+                          <div className="mt-1 text-xs font-normal text-muted-foreground">{getCollegeLocation(c)}</div>
+                        </Link>
+                        <button onClick={() => toggle(c.id)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Remove">
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </th>
                   ))}
-                  {items.length < 4 && <td />}
+                  {items.length < 4 && (
+                    <th className="w-48 p-5">
+                      <button
+                        onClick={() => setPicker(true)}
+                        className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border py-8 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary"
+                      >
+                        <Plus className="h-5 w-5" /> Add college
+                      </button>
+                    </th>
+                  )}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <tr key={row.label} className="border-b border-border/60 last:border-0">
+                    <td className="p-5 align-top text-xs font-semibold uppercase tracking-wider text-muted-foreground">{row.label}</td>
+                    {items.map((c) => (
+                      <td key={c.id} className="p-5 align-top text-sm text-foreground/80">
+                        {row.render(c)}
+                      </td>
+                    ))}
+                    {items.length < 4 && <td />}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Swipe Cards */}
+          <div className="mt-6 flex gap-4 overflow-x-auto pb-6 snap-x snap-mandatory md:hidden -mx-4 px-4 sm:-mx-6 sm:px-6">
+            {items.map((c) => (
+              <div key={c.id} className="w-[85vw] max-w-[320px] shrink-0 snap-center rounded-2xl border border-border bg-card flex flex-col overflow-hidden shadow-soft">
+                <div className="p-5 border-b border-border bg-muted/20 relative">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-primary font-bold text-primary-foreground mb-3">
+                    {getCollegeShortName(c)}
+                  </div>
+                  <button onClick={() => toggle(c.id)} className="absolute top-4 right-4 rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Remove">
+                    <X className="h-4 w-4" />
+                  </button>
+                  <Link to={`/colleges/${c.id}`} className="block">
+                    <div className="font-display text-base font-semibold hover:text-primary">{getCollegeDisplayName(c)}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">{getCollegeLocation(c)}</div>
+                  </Link>
+                </div>
+                <div className="p-5 flex flex-col gap-4">
+                  {rows.map((row) => (
+                    <div key={row.label} className="flex flex-col gap-1">
+                      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{row.label}</div>
+                      <div className="text-sm font-medium">{row.render(c)}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {items.length < 4 && (
+              <div className="w-[85vw] max-w-[320px] shrink-0 snap-center rounded-2xl border-2 border-dashed border-border bg-transparent flex items-center justify-center p-8">
+                <button
+                  onClick={() => setPicker(true)}
+                  className="flex flex-col items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary"
+                >
+                  <Plus className="h-8 w-8 mb-2" /> Add college
+                </button>
+              </div>
+            )}
+          </div>
+        </>
       )}
 
       {picker && (

@@ -88,7 +88,7 @@ export default function Predictor() {
         <button
           onClick={handlePredict}
           disabled={loading}
-          className="mt-8 inline-flex items-center gap-2 rounded-3xl bg-gradient-primary px-8 py-4 text-sm font-semibold text-primary-foreground shadow-elegant disabled:opacity-75"
+          className="mt-8 flex w-full items-center justify-center gap-2 rounded-3xl bg-gradient-primary px-8 py-4 text-sm font-semibold text-primary-foreground shadow-elegant disabled:opacity-75 sm:w-auto sm:inline-flex"
         >
           {loading ? (
             <>

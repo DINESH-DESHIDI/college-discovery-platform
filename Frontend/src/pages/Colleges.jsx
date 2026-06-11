@@ -179,15 +179,15 @@ export default function Colleges() {
         </p>
 
         {/* Search bar */}
-        <div className="mt-5 flex gap-2 rounded-2xl border border-border bg-background p-2 shadow-soft">
-          <div className="flex flex-1 items-center gap-2 px-3">
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:gap-2">
+          <div className="flex flex-1 items-center gap-2 rounded-2xl border border-border bg-background p-2 px-4 shadow-soft">
             <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
             <input
               id="college-search"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by name, code, place, or affiliation…"
-              className="w-full bg-transparent py-2 text-sm outline-none placeholder:text-muted-foreground"
+              placeholder="Search by name, code, place…"
+              className="w-full bg-transparent py-1.5 text-sm outline-none placeholder:text-muted-foreground"
             />
             {searchTerm && (
               <button onClick={() => setSearchTerm("")} aria-label="Clear search">
@@ -197,7 +197,7 @@ export default function Colleges() {
           </div>
           <button
             onClick={() => setFiltersOpen(!filtersOpen)}
-            className="flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm font-medium hover:border-primary hover:text-primary md:hidden"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-background px-4 py-3 text-sm font-medium hover:border-primary hover:text-primary sm:w-auto sm:py-2 md:hidden"
           >
             <SlidersHorizontal className="h-4 w-4" />
             Filters
@@ -375,54 +375,58 @@ export default function Colleges() {
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setFiltersOpen(false)}
           />
-          <div className="absolute inset-y-0 right-0 w-[85%] max-w-sm overflow-y-auto bg-card p-5 shadow-2xl space-y-5">
-            <div className="flex items-center justify-between border-b border-border pb-4">
+          <div className="absolute inset-y-0 right-0 flex w-[85%] max-w-sm flex-col bg-card shadow-2xl transition-transform duration-300">
+            <div className="flex items-center justify-between border-b border-border p-5">
               <h3 className="font-display text-lg font-semibold">Filters</h3>
               <button onClick={() => setFiltersOpen(false)} className="rounded-lg p-2 hover:bg-secondary">
                 <X className="h-5 w-5" />
               </button>
             </div>
+            
+            <div className="flex-1 overflow-y-auto p-5 space-y-5">
+              <FilterGroup label="College Type">
+                <select
+                  value={collegeType}
+                  onChange={(e) => { setCollegeType(e.target.value); setPage(1); }}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none"
+                >
+                  <option value="">All Types</option>
+                  {filterOptions.collegeTypes.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </FilterGroup>
 
-            <FilterGroup label="College Type">
-              <select
-                value={collegeType}
-                onChange={(e) => { setCollegeType(e.target.value); setPage(1); }}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none"
-              >
-                <option value="">All Types</option>
-                {filterOptions.collegeTypes.map((t) => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-              </select>
-            </FilterGroup>
+              <FilterGroup label="Place">
+                <select
+                  value={place}
+                  onChange={(e) => { setPlace(e.target.value); setPage(1); }}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none"
+                >
+                  <option value="">All Places</option>
+                  {filterOptions.places.map((p) => (
+                    <option key={p} value={p}>{p}</option>
+                  ))}
+                </select>
+              </FilterGroup>
+            </div>
 
-            <FilterGroup label="Place">
-              <select
-                value={place}
-                onChange={(e) => { setPlace(e.target.value); setPage(1); }}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none"
-              >
-                <option value="">All Places</option>
-                {filterOptions.places.map((p) => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
-            </FilterGroup>
-
-            {hasFilters && (
+            <div className="border-t border-border bg-background p-5 space-y-3 mt-auto">
+              {hasFilters && (
+                <button
+                  onClick={() => { resetFilters(); setFiltersOpen(false); }}
+                  className="w-full rounded-xl border border-border py-2.5 text-sm font-medium hover:border-primary"
+                >
+                  Reset Filters
+                </button>
+              )}
               <button
-                onClick={() => { resetFilters(); setFiltersOpen(false); }}
-                className="w-full rounded-xl border border-border py-2.5 text-sm font-medium hover:border-primary"
+                onClick={() => setFiltersOpen(false)}
+                className="w-full rounded-xl bg-gradient-to-r from-primary to-primary/80 py-3 text-sm font-semibold text-primary-foreground"
               >
-                Reset Filters
+                Show {total.toLocaleString()} results
               </button>
-            )}
-            <button
-              onClick={() => setFiltersOpen(false)}
-              className="w-full rounded-xl bg-gradient-to-r from-primary to-primary/80 py-3 text-sm font-semibold text-primary-foreground"
-            >
-              Show {total.toLocaleString()} results
-            </button>
+            </div>
           </div>
         </div>
       )}

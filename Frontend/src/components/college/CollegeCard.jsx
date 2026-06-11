@@ -87,14 +87,14 @@ export function CollegeCard({ college }) {
         <div className="mt-5 flex gap-2">
           <Link
             to={`/colleges/${college.id}`}
-            className="flex-1 rounded-lg bg-foreground px-3 py-2 text-center text-xs font-semibold text-background transition-colors hover:bg-foreground/90"
+            className="flex-1 rounded-lg bg-foreground px-3 py-2.5 text-center text-xs font-semibold text-background transition-colors hover:bg-foreground/90 sm:py-2"
           >
             View Details
           </Link>
           <button
             onClick={() => canCompare && toggleCompare(college.id)}
             disabled={!canCompare}
-            className={`flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
+            className={`flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2.5 text-xs font-semibold transition-colors sm:py-2 ${
               compared
                 ? "border-primary bg-primary/10 text-primary"
                 : canCompare

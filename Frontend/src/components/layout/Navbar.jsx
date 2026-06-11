@@ -141,40 +141,80 @@ export function Navbar() {
         </div>
       </div>
 
+      {/* Mobile Drawer Overlay */}
       {open && (
-        <div className="border-t border-border/60 bg-background md:hidden">
-          <div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
-            {links.map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary"
-              >
-                {l.label}
-              </Link>
-            ))}
-            <div className="mt-2 flex gap-2 border-t border-border/60 pt-3">
+        <div 
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden transition-opacity" 
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Mobile Drawer */}
+      <div 
+        className={`fixed inset-y-0 right-0 z-50 w-64 transform border-l border-border bg-background p-6 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="flex items-center justify-between mb-8">
+          <span className="font-display text-lg font-bold">Menu</span>
+          <button
+            onClick={() => setOpen(false)}
+            className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-secondary"
+            aria-label="Close menu"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          {links.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              onClick={() => setOpen(false)}
+              className={`rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
+                (l.to === "/" ? pathname === "/" : pathname.startsWith(l.to))
+                  ? "bg-secondary text-foreground"
+                  : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+              }`}
+            >
+              {l.label}
+            </Link>
+          ))}
+
+          <div className="mt-4 flex flex-col gap-3 border-t border-border/60 pt-6">
             {user ? (
               <button
-                onClick={logout}
-                className="flex-1 rounded-lg border border-border px-3 py-2 text-center text-sm font-medium"
+                onClick={() => {
+                  logout();
+                  setOpen(false);
+                }}
+                className="w-full rounded-xl border border-border px-4 py-3 text-center text-sm font-semibold transition-colors hover:bg-secondary"
               >
                 Log out
               </button>
             ) : (
               <>
-                <Link to="/login" className="flex-1 rounded-lg border border-border px-3 py-2 text-center text-sm font-medium">
+                <Link
+                  to="/login"
+                  onClick={() => setOpen(false)}
+                  className="w-full rounded-xl border border-border px-4 py-3 text-center text-sm font-semibold transition-colors hover:bg-secondary"
+                >
                   Log in
                 </Link>
-                <Link to="/signup" className="flex-1 rounded-lg bg-gradient-primary px-3 py-2 text-center text-sm font-semibold text-primary-foreground">
+                <Link
+                  to="/signup"
+                  onClick={() => setOpen(false)}
+                  className="w-full rounded-xl bg-gradient-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground shadow-elegant"
+                >
                   Sign up
                 </Link>
               </>
             )}
           </div>
-          </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }

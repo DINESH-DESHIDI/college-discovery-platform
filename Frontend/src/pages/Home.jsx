@@ -50,8 +50,8 @@ export default function Home() {
               Compare 10,000+ colleges with verified data on fees, placements, rankings and real student reviews — all in one place.
             </p>
 
-            <form onSubmit={onSearch} className="mx-auto mt-8 flex max-w-2xl items-center gap-2 rounded-2xl border border-border bg-background p-2 shadow-elegant">
-              <div className="flex flex-1 items-center gap-2 px-3">
+            <form onSubmit={onSearch} className="mx-auto mt-8 flex max-w-2xl flex-col items-center gap-3 rounded-2xl border border-border bg-background p-2 shadow-elegant sm:flex-row sm:gap-2">
+              <div className="flex w-full flex-1 items-center gap-2 px-3 sm:w-auto">
                 <Search className="h-5 w-5 text-muted-foreground" />
                 <input
                   value={q}
@@ -60,7 +60,7 @@ export default function Home() {
                   className="w-full bg-transparent py-2.5 text-sm outline-none placeholder:text-muted-foreground"
                 />
               </div>
-              <button type="submit" className="rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-elegant transition-transform hover:-translate-y-0.5">
+              <button type="submit" className="w-full rounded-xl bg-gradient-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-elegant transition-transform hover:-translate-y-0.5 sm:w-auto sm:py-2.5">
                 Search
               </button>
             </form>
@@ -180,10 +180,10 @@ export default function Home() {
               Create a free account, save your shortlist, and get personalized college recommendations.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link to="/signup" className="rounded-xl bg-background px-5 py-3 text-sm font-semibold text-foreground shadow-elegant transition-transform hover:-translate-y-0.5">
+              <Link to="/signup" className="w-full rounded-xl bg-background px-5 py-3 text-center text-sm font-semibold text-foreground shadow-elegant transition-transform hover:-translate-y-0.5 sm:w-auto">
                 Get started free
               </Link>
-              <Link to="/colleges" className="rounded-xl border border-white/30 px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-white/10">
+              <Link to="/colleges" className="w-full rounded-xl border border-white/30 px-5 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-white/10 sm:w-auto">
                 Browse colleges
               </Link>
             </div>

@@ -190,8 +190,8 @@ export default function CollegeDetail() {
               ) : (
                 Object.entries(cutoffsByBranch).map(([branchName, branchCutoffs]) => (
                   <Card key={branchName} title={`${branchName} — EAMCET 2025 Closing Ranks`}>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left text-sm">
+                    <div className="-mx-6 overflow-x-auto px-6 sm:mx-0 sm:px-0">
+                      <table className="w-full min-w-[500px] text-left text-sm">
                         <thead className="border-b border-border text-xs uppercase tracking-wider text-muted-foreground">
                           <tr>
                             <th className="py-3 pr-4">Category</th>
