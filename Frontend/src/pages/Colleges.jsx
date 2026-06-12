@@ -168,9 +168,9 @@ export default function Colleges() {
   const hasFilters = debouncedSearch || collegeType || place;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:py-10 sm:px-6">
       {/* ── Header ── */}
-      <div className="rounded-3xl border border-border bg-gradient-to-br from-primary/5 to-background p-6 sm:p-8">
+      <div className="rounded-3xl border border-border bg-gradient-to-br from-primary/5 to-background p-5 sm:p-8">
         <h1 className="font-display text-2xl font-bold sm:text-3xl">
           Explore Colleges
         </h1>
@@ -205,7 +205,7 @@ export default function Colleges() {
         </div>
       </div>
 
-      <div className="mt-8 flex gap-8">
+      <div className="mt-6 sm:mt-8 flex gap-8">
         {/* ── Sidebar filters (desktop) ── */}
         <aside className="hidden w-64 shrink-0 md:block">
           <div className="sticky top-24 rounded-2xl border border-border bg-card p-5 space-y-5">
@@ -375,7 +375,7 @@ export default function Colleges() {
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setFiltersOpen(false)}
           />
-          <div className="absolute inset-y-0 right-0 flex w-[85%] max-w-sm flex-col bg-card shadow-2xl transition-transform duration-300">
+          <div className="absolute inset-y-0 right-0 flex w-full max-w-sm flex-col bg-card shadow-2xl transition-transform duration-300">
             <div className="flex items-center justify-between border-b border-border p-5">
               <h3 className="font-display text-lg font-semibold">Filters</h3>
               <button onClick={() => setFiltersOpen(false)} className="rounded-lg p-2 hover:bg-secondary">

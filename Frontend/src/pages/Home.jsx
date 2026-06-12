@@ -36,21 +36,21 @@ export default function Home() {
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-hero">
         <div className="absolute inset-0 -z-10 opacity-30 [background-image:radial-gradient(circle_at_1px_1px,var(--border)_1px,transparent_0)] [background-size:24px_24px]" />
-        <div className="mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 lg:pb-28 lg:pt-24">
+        <div className="mx-auto max-w-7xl px-4 pb-12 pt-10 sm:px-6 sm:pb-20 sm:pt-16 lg:pb-28 lg:pt-24">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1 text-[10px] sm:text-xs font-medium text-muted-foreground backdrop-blur">
+              <Sparkles className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-primary" />
               Trusted by 2M+ aspiring students
             </span>
-            <h1 className="mt-5 font-display text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+            <h1 className="mt-4 font-display text-3xl font-bold leading-tight tracking-tight sm:mt-5 sm:text-5xl lg:text-6xl">
               Find the college that{" "}
               <span className="text-gradient">shapes your future</span>
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg">
+            <p className="mx-auto mt-4 max-w-2xl text-sm text-muted-foreground sm:mt-5 sm:text-base md:text-lg">
               Compare 10,000+ colleges with verified data on fees, placements, rankings and real student reviews — all in one place.
             </p>
 
-            <form onSubmit={onSearch} className="mx-auto mt-8 flex max-w-2xl flex-col items-center gap-3 rounded-2xl border border-border bg-background p-2 shadow-elegant sm:flex-row sm:gap-2">
+            <form onSubmit={onSearch} className="mx-auto mt-6 flex max-w-2xl flex-col items-center gap-3 rounded-2xl border border-border bg-background p-2 shadow-elegant sm:mt-8 sm:flex-row sm:gap-2">
               <div className="flex w-full flex-1 items-center gap-2 px-3 sm:w-auto">
                 <Search className="h-5 w-5 text-muted-foreground" />
                 <input
@@ -65,7 +65,7 @@ export default function Home() {
               </button>
             </form>
 
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-[10px] sm:text-xs text-muted-foreground sm:mt-5">
               <span>Popular:</span>
               {["IIT Bombay", "IIM Ahmedabad", "AIIMS Delhi", "BITS Pilani"].map((t) => (
                 <Link key={t} to={`/colleges?q=${encodeURIComponent(t)}`} className="rounded-full border border-border bg-background/60 px-3 py-1 hover:border-primary hover:text-primary">
@@ -76,15 +76,15 @@ export default function Home() {
           </div>
 
           {/* Stats */}
-          <div className="mx-auto mt-16 grid max-w-4xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-4">
+          <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:mt-16 md:grid-cols-4">
             {[
               { label: "Colleges", value: totalColleges > 0 ? totalColleges.toLocaleString() : "163+" },
               { label: "Courses", value: "850+" },
               { label: "Cities", value: "320+" },
               { label: "Reviews", value: "2M+" },
             ].map((s) => (
-              <div key={s.label} className="bg-card p-6 text-center">
-                <div className="font-display text-2xl font-bold sm:text-3xl">{s.value}</div>
+              <div key={s.label} className="bg-card p-4 text-center sm:p-6">
+                <div className="font-display text-xl font-bold sm:text-2xl md:text-3xl">{s.value}</div>
                 <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
               </div>
             ))}
@@ -93,7 +93,7 @@ export default function Home() {
       </section>
 
       {/* CATEGORIES */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-20">
         <SectionHead
           eyebrow="Explore by stream"
           title="Popular courses & categories"
@@ -106,7 +106,7 @@ export default function Home() {
               <Link
                 key={c.slug}
                 to={`/colleges?category=${encodeURIComponent(c.name)}`}
-                className="group relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-border bg-card p-5 transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-elegant"
+                className="group relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-border bg-card p-4 sm:p-5 transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-elegant"
               >
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground">
                   <Icon className="h-5 w-5" />
@@ -142,7 +142,7 @@ export default function Home() {
       </section>
 
       {/* FEATURES */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-20">
         <div className="grid gap-6 md:grid-cols-3">
           {[
             { icon: Shield, title: "Verified Data", text: "Every fee, placement and ranking figure is independently verified for accuracy." },
@@ -161,7 +161,7 @@ export default function Home() {
       </section>
 
       {/* TRENDING */}
-      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6">
+      <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:pb-20">
         <SectionHead eyebrow="Trending now" title="EAMCET colleges with cutoff data" />
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {loadingFeatured
@@ -172,10 +172,10 @@ export default function Home() {
 
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-primary p-10 text-primary-foreground sm:p-14">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-primary p-8 text-primary-foreground sm:p-10 lg:p-14">
           <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
           <div className="relative max-w-2xl">
-            <h2 className="font-display text-3xl font-bold sm:text-4xl">Ready to take the next step?</h2>
+            <h2 className="font-display text-2xl font-bold sm:text-3xl lg:text-4xl">Ready to take the next step?</h2>
             <p className="mt-3 text-primary-foreground/80">
               Create a free account, save your shortlist, and get personalized college recommendations.
             </p>
@@ -198,8 +198,8 @@ function SectionHead({ eyebrow, title, subtitle }) {
   return (
     <div>
       <div className="text-xs font-semibold uppercase tracking-wider text-primary">{eyebrow}</div>
-      <h2 className="mt-2 font-display text-2xl font-bold sm:text-3xl">{title}</h2>
-      {subtitle && <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">{subtitle}</p>}
+      <h2 className="mt-2 font-display text-xl font-bold sm:text-2xl md:text-3xl">{title}</h2>
+      {subtitle && <p className="mt-2 max-w-2xl text-xs text-muted-foreground sm:text-sm md:text-base">{subtitle}</p>}
     </div>
   );
 }

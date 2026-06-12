@@ -29,7 +29,7 @@ app.use(
       "http://localhost:5173",
       "http://localhost:3000",
       "http://localhost:5174",
-      "https://collage-discovery-frontend.vercel.app"
+      "https://college-discovery-platform-theta-five.vercel.app"
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

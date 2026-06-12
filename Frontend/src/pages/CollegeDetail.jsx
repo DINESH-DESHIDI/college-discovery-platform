@@ -88,8 +88,8 @@ export default function CollegeDetail() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="-mt-10 rounded-3xl border border-border bg-card p-6 shadow-elegant sm:p-8">
-          <div className="flex flex-col gap-6 md:flex-row md:items-start">
+        <div className="-mt-10 rounded-3xl border border-border bg-card p-5 shadow-elegant sm:p-8">
+          <div className="flex flex-col gap-5 sm:gap-6 md:flex-row md:items-start">
             <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-primary text-2xl font-bold text-primary-foreground shadow-elegant sm:h-24 sm:w-24">
               {shortName}
             </div>
@@ -130,7 +130,7 @@ export default function CollegeDetail() {
             </div>
           </div>
 
-          <div className="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-3">
+          <div className="mt-6 sm:mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-3">
             <Stat label="Institute Code" value={college.instCode || "—"} />
             <Stat label="College Type" value={collegeType || "—"} />
             <Stat label="Cutoff Entries" value={String(cutoffs.length)} />
@@ -231,7 +231,7 @@ function Badge({ children }) {
 
 function Card({ title, children }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-6">
+    <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
       {title && <h3 className="mb-4 font-display text-lg font-semibold">{title}</h3>}
       {children}
     </div>
@@ -240,7 +240,7 @@ function Card({ title, children }) {
 
 function Stat({ label, value }) {
   return (
-    <div className="flex flex-col gap-2 bg-card p-5">
+    <div className="flex flex-col gap-2 bg-card p-4 sm:p-5">
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="font-display text-xl font-bold">{value}</div>
     </div>

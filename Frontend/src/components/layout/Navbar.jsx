@@ -152,12 +152,12 @@ export function Navbar() {
 
       {/* Mobile Drawer */}
       <div 
-        className={`fixed inset-y-0 right-0 z-50 w-64 transform border-l border-border bg-background p-6 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed inset-y-0 right-0 z-50 w-[80vw] max-w-sm transform border-l border-border bg-background p-6 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex items-center justify-between mb-8">
-          <span className="font-display text-lg font-bold">Menu</span>
+          <span className="font-display text-xl font-bold">Menu</span>
           <button
             onClick={() => setOpen(false)}
             className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-secondary"
@@ -173,7 +173,7 @@ export function Navbar() {
               key={l.to}
               to={l.to}
               onClick={() => setOpen(false)}
-              className={`rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
+              className={`rounded-xl px-4 py-3.5 text-base font-medium transition-colors ${
                 (l.to === "/" ? pathname === "/" : pathname.startsWith(l.to))
                   ? "bg-secondary text-foreground"
                   : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
@@ -190,7 +190,7 @@ export function Navbar() {
                   logout();
                   setOpen(false);
                 }}
-                className="w-full rounded-xl border border-border px-4 py-3 text-center text-sm font-semibold transition-colors hover:bg-secondary"
+                className="w-full rounded-xl border border-border px-4 py-3.5 text-center text-base font-semibold transition-colors hover:bg-secondary"
               >
                 Log out
               </button>
@@ -199,14 +199,14 @@ export function Navbar() {
                 <Link
                   to="/login"
                   onClick={() => setOpen(false)}
-                  className="w-full rounded-xl border border-border px-4 py-3 text-center text-sm font-semibold transition-colors hover:bg-secondary"
+                  className="w-full rounded-xl border border-border px-4 py-3.5 text-center text-base font-semibold transition-colors hover:bg-secondary"
                 >
                   Log in
                 </Link>
                 <Link
                   to="/signup"
                   onClick={() => setOpen(false)}
-                  className="w-full rounded-xl bg-gradient-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground shadow-elegant"
+                  className="w-full rounded-xl bg-gradient-primary px-4 py-3.5 text-center text-base font-semibold text-primary-foreground shadow-elegant"
                 >
                   Sign up
                 </Link>
