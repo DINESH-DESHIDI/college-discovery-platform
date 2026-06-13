@@ -54,7 +54,7 @@ const compareColleges = async (req, res, next) => {
 // GET /api/colleges/predict?rank=5000&category=OC&gender=BOYS
 const predictCollegesController = async (req, res, next) => {
   try {
-    const { rank, category, gender, year } = req.query;
+    const { rank, category, gender, year, branch, collegeType, place, district } = req.query;
     if (!rank) {
       return sendError(res, "rank parameter is required.", 400);
     }
@@ -63,6 +63,9 @@ const predictCollegesController = async (req, res, next) => {
       category: category || "OC",
       gender:   gender   || "BOYS",
       year:     year     ? parseInt(year, 10) : 2025,
+      branch,
+      collegeType,
+      place:    place || district,
     });
     return sendSuccess(res, results, "Predictions generated successfully.");
   } catch (err) {

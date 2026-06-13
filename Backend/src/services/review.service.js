@@ -9,7 +9,7 @@ const prisma = require("../config/prisma");
 const createReview = async (userId, userName, { collegeId, title, body, rating }) => {
   // Resolve slug → id if needed
   const college = await prisma.college.findFirst({
-    where: { OR: [{ id: collegeId }, { slug: collegeId }] },
+    where: { OR: [{ id: collegeId }, { instCode: collegeId }] },
     select: { id: true },
   });
 
@@ -31,21 +31,6 @@ const createReview = async (userId, userName, { collegeId, title, body, rating }
     },
   });
 
-  // Recalculate college average rating
-  const aggregate = await prisma.review.aggregate({
-    where: { collegeId: college.id },
-    _avg: { rating: true },
-    _count: true,
-  });
-
-  await prisma.college.update({
-    where: { id: college.id },
-    data: {
-      rating: Math.round((aggregate._avg.rating || rating) * 10) / 10,
-      reviewsCount: aggregate._count,
-    },
-  });
-
   return review;
 };
 
@@ -54,7 +39,7 @@ const createReview = async (userId, userName, { collegeId, title, body, rating }
  */
 const getCollegeReviews = async (collegeId, page = 1, limit = 10) => {
   const college = await prisma.college.findFirst({
-    where: { OR: [{ id: collegeId }, { slug: collegeId }] },
+    where: { OR: [{ id: collegeId }, { instCode: collegeId }] },
     select: { id: true },
   });
 

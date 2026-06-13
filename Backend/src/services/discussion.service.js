@@ -1,11 +1,13 @@
 const prisma = require("../config/prisma");
 
-const getQuestions = async ({ page = 1, limit = 10, sort = "recent" }) => {
+const getQuestions = async ({ page = 1, limit = 10, sort = "recent", collegeId }) => {
   const skip = (page - 1) * limit;
   const orderBy = sort === "active" ? { answers: { _count: "desc" } } : { createdAt: "desc" };
+  const where = collegeId ? { collegeId } : {};
 
   const [questions, total] = await Promise.all([
     prisma.question.findMany({
+      where,
       skip,
       take: limit,
       orderBy,
@@ -16,7 +18,7 @@ const getQuestions = async ({ page = 1, limit = 10, sort = "recent" }) => {
         },
       },
     }),
-    prisma.question.count(),
+    prisma.question.count({ where }),
   ]);
 
   return { questions, total, page, limit };
@@ -44,13 +46,6 @@ const createQuestion = async ({ title, body, tags, userId, userName, collegeId }
       collegeId,
     },
   });
-
-  if (collegeId) {
-    await prisma.college.update({
-      where: { id: collegeId },
-      data: { discussionCount: { increment: 1 } },
-    });
-  }
 
   return question;
 };

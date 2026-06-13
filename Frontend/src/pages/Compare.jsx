@@ -4,7 +4,12 @@ import { useCompare } from "@/hooks/useCompare";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useState, useEffect } from "react";
 import api from "@/utils/api";
-import { getCollegeDisplayName, getCollegeLocation, getCollegeType, getCollegeShortName } from "@/utils/college";
+import {
+  getCollegeDisplayName,
+  getCollegeLocation,
+  getCollegeType,
+  getCollegeShortName,
+} from "@/utils/college";
 
 export default function Compare() {
   const { ids, toggle, clear } = useCompare();
@@ -57,7 +62,10 @@ export default function Compare() {
           title="Your compare list is empty"
           description="Add up to 4 colleges from the listings or detail pages to compare them side-by-side."
           action={
-            <Link to="/colleges" className="rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-elegant">
+            <Link
+              to="/colleges"
+              className="rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-elegant"
+            >
               Browse colleges
             </Link>
           }
@@ -67,15 +75,58 @@ export default function Compare() {
   }
 
   const rows = [
-    { label: "Overall Rank", render: (c) => c.ranking ? `#${c.ranking.overallRank}` : "N/A" },
-    { label: "Average Closing Rank", render: (c) => c.ranking ? c.ranking.avgRank.toLocaleString() : "—" },
-    { label: "Best Branch Rank", render: (c) => c.ranking ? c.ranking.bestRank.toLocaleString() : "—" },
+    { label: "Overall Rank", render: (c) => (c.ranking ? `#${c.ranking.overallRank}` : "N/A") },
+    {
+      label: "Average Closing Rank",
+      render: (c) => (c.ranking ? c.ranking.avgRank.toLocaleString() : "—"),
+    },
+    {
+      label: "Best Branch Rank",
+      render: (c) => (c.ranking ? c.ranking.bestRank.toLocaleString() : "—"),
+    },
     { label: "Institute Code", render: (c) => c.instCode || "—" },
     { label: "Type", render: (c) => getCollegeType(c) || "—" },
     { label: "Place", render: (c) => getCollegeLocation(c) },
     { label: "District", render: (c) => c.districtCode || "—" },
     { label: "Affiliated To", render: (c) => c.affiliatedTo || "—" },
-    { label: "Cutoff Entries", render: (c) => String((c.cutoffs || []).length), winner: (c) => (c.cutoffs || []).length },
+    { label: "Cutoff Entries", render: (c) => String((c.cutoffs || []).length) },
+    {
+      label: "Branches",
+      render: (c) => {
+        const uniqueBranches = Array.from(
+          new Set((c.cutoffs || []).map((cu) => cu.branch?.code).filter(Boolean)),
+        );
+        return (
+          uniqueBranches.slice(0, 4).join(", ") + (uniqueBranches.length > 4 ? "..." : "") || "—"
+        );
+      },
+    },
+    {
+      label: "Average Package",
+      render: (c) =>
+        c.placement?.averagePackage
+          ? c.placement.averagePackage >= 1000
+            ? (c.placement.averagePackage / 100000).toFixed(1) + " LPA"
+            : c.placement.averagePackage + " LPA"
+          : "—",
+    },
+    {
+      label: "Highest Package",
+      render: (c) =>
+        c.placement?.highestPackage
+          ? c.placement.highestPackage >= 1000
+            ? (c.placement.highestPackage / 100000).toFixed(1) + " LPA"
+            : c.placement.highestPackage + " LPA"
+          : "—",
+    },
+    {
+      label: "Placement Rate",
+      render: (c) => (c.placement?.placementRate ? `${c.placement.placementRate}%` : "—"),
+    },
+    {
+      label: "Top Recruiters",
+      render: (c) => c.placement?.topRecruiters?.slice(0, 3).join(", ") || "—",
+    },
   ];
 
   const remaining = pickerList.filter((c) => !ids.includes(c.id));
@@ -85,9 +136,14 @@ export default function Compare() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold sm:text-3xl">Compare Colleges</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Comparing {ids.length} of 4 colleges side-by-side.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Comparing {ids.length} of 4 colleges side-by-side.
+          </p>
         </div>
-        <button onClick={clear} className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:border-destructive hover:text-destructive">
+        <button
+          onClick={clear}
+          className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:border-destructive hover:text-destructive"
+        >
           Clear all
         </button>
       </div>
@@ -110,7 +166,9 @@ export default function Compare() {
             <table className="w-full min-w-[680px] text-left text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="w-48 p-5 text-xs uppercase tracking-wider text-muted-foreground">Attribute</th>
+                  <th className="w-48 p-5 text-xs uppercase tracking-wider text-muted-foreground">
+                    Attribute
+                  </th>
                   {items.map((c) => (
                     <th key={c.id} className="p-5">
                       <div className="flex items-start justify-between gap-2">
@@ -118,10 +176,18 @@ export default function Compare() {
                           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-primary font-bold text-primary-foreground">
                             {getCollegeShortName(c)}
                           </div>
-                          <div className="mt-3 font-display text-base font-semibold hover:text-primary">{getCollegeDisplayName(c)}</div>
-                          <div className="mt-1 text-xs font-normal text-muted-foreground">{getCollegeLocation(c)}</div>
+                          <div className="mt-3 font-display text-base font-semibold hover:text-primary">
+                            {getCollegeDisplayName(c)}
+                          </div>
+                          <div className="mt-1 text-xs font-normal text-muted-foreground">
+                            {getCollegeLocation(c)}
+                          </div>
                         </Link>
-                        <button onClick={() => toggle(c.id)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Remove">
+                        <button
+                          onClick={() => toggle(c.id)}
+                          className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                          aria-label="Remove"
+                        >
                           <X className="h-4 w-4" />
                         </button>
                       </div>
@@ -142,7 +208,9 @@ export default function Compare() {
               <tbody>
                 {rows.map((row) => (
                   <tr key={row.label} className="border-b border-border/60 last:border-0">
-                    <td className="p-5 align-top text-xs font-semibold uppercase tracking-wider text-muted-foreground">{row.label}</td>
+                    <td className="p-5 align-top text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      {row.label}
+                    </td>
                     {items.map((c) => (
                       <td key={c.id} className="p-5 align-top text-sm text-foreground/80">
                         {row.render(c)}
@@ -158,23 +226,36 @@ export default function Compare() {
           {/* Mobile Swipe Cards */}
           <div className="mt-6 flex gap-4 overflow-x-auto pb-6 snap-x snap-mandatory md:hidden -mx-4 px-4 sm:-mx-6 sm:px-6">
             {items.map((c) => (
-              <div key={c.id} className="w-[85vw] max-w-[320px] shrink-0 snap-center rounded-2xl border border-border bg-card flex flex-col overflow-hidden shadow-soft">
+              <div
+                key={c.id}
+                className="w-[85vw] max-w-[320px] shrink-0 snap-center rounded-2xl border border-border bg-card flex flex-col overflow-hidden shadow-soft"
+              >
                 <div className="p-5 border-b border-border bg-muted/20 relative">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-primary font-bold text-primary-foreground mb-3">
                     {getCollegeShortName(c)}
                   </div>
-                  <button onClick={() => toggle(c.id)} className="absolute top-4 right-4 rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Remove">
+                  <button
+                    onClick={() => toggle(c.id)}
+                    className="absolute top-4 right-4 rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    aria-label="Remove"
+                  >
                     <X className="h-4 w-4" />
                   </button>
                   <Link to={`/colleges/${c.id}`} className="block">
-                    <div className="font-display text-base font-semibold hover:text-primary">{getCollegeDisplayName(c)}</div>
-                    <div className="mt-1 text-xs text-muted-foreground">{getCollegeLocation(c)}</div>
+                    <div className="font-display text-base font-semibold hover:text-primary">
+                      {getCollegeDisplayName(c)}
+                    </div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      {getCollegeLocation(c)}
+                    </div>
                   </Link>
                 </div>
                 <div className="p-5 flex flex-col gap-4">
                   {rows.map((row) => (
                     <div key={row.label} className="flex flex-col gap-1">
-                      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{row.label}</div>
+                      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        {row.label}
+                      </div>
                       <div className="text-sm font-medium">{row.render(c)}</div>
                     </div>
                   ))}
@@ -197,17 +278,28 @@ export default function Compare() {
 
       {picker && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog">
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setPicker(false)} />
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setPicker(false)}
+          />
           <div className="relative max-h-[80vh] w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
             <div className="flex items-center justify-between border-b border-border p-5">
               <h3 className="font-display text-lg font-semibold">Add to compare</h3>
-              <button onClick={() => setPicker(false)} className="rounded-lg p-2 hover:bg-secondary"><X className="h-4 w-4" /></button>
+              <button
+                onClick={() => setPicker(false)}
+                className="rounded-lg p-2 hover:bg-secondary"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
             <div className="max-h-[60vh] overflow-y-auto p-3">
               {remaining.map((c) => (
                 <button
                   key={c.id}
-                  onClick={() => { toggle(c.id); setPicker(false); }}
+                  onClick={() => {
+                    toggle(c.id);
+                    setPicker(false);
+                  }}
                   className="flex w-full items-center gap-3 rounded-xl p-3 text-left hover:bg-secondary"
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-primary text-sm font-bold text-primary-foreground">
@@ -215,7 +307,9 @@ export default function Compare() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="truncate font-medium">{getCollegeDisplayName(c)}</div>
-                    <div className="text-xs text-muted-foreground">{getCollegeLocation(c)} · {c.instCode}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {getCollegeLocation(c)} · {c.instCode}
+                    </div>
                   </div>
                 </button>
               ))}

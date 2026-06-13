@@ -43,7 +43,9 @@ export function Navbar() {
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground shadow-elegant">
             <GraduationCap className="h-5 w-5" />
           </span>
-          <span>Coll<span className="text-gradient">Verse</span></span>
+          <span>
+            Coll<span className="text-gradient">Verse</span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -58,7 +60,9 @@ export function Navbar() {
                 }`}
               >
                 {l.label}
-                {active && <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-gradient-primary" />}
+                {active && (
+                  <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-gradient-primary" />
+                )}
               </Link>
             );
           })}
@@ -143,15 +147,15 @@ export function Navbar() {
 
       {/* Mobile Drawer Overlay */}
       {open && (
-        <div 
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden transition-opacity" 
+        <div
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden transition-opacity"
           onClick={() => setOpen(false)}
           aria-hidden="true"
         />
       )}
 
       {/* Mobile Drawer */}
-      <div 
+      <div
         className={`fixed inset-y-0 right-0 z-50 w-[80vw] max-w-sm transform border-l border-border bg-background p-6 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
           open ? "translate-x-0" : "translate-x-full"
         }`}

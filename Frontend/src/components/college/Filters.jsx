@@ -13,16 +13,13 @@ export const defaultFilters = {
   sort: "ranking",
 };
 
-export function Filters({
-  state,
-  onChange,
-  locations,
-  cities,
-  categories,
-}) {
+export function Filters({ state, onChange, locations, cities, categories }) {
   const update = (k, v) => onChange({ ...state, [k]: v });
   const feePct = useMemo(() => ((state.maxFees || 3000000) / 3000000) * 100, [state.maxFees]);
-  const packagePct = useMemo(() => Math.min(100, ((state.minPackage || 0) / 3000000) * 100), [state.minPackage]);
+  const packagePct = useMemo(
+    () => Math.min(100, ((state.minPackage || 0) / 3000000) * 100),
+    [state.minPackage],
+  );
 
   return (
     <div className="space-y-6">
@@ -92,7 +89,9 @@ export function Filters({
                   : "border-border text-muted-foreground hover:text-foreground"
               }`}
             >
-              {r === 0 ? "Any" : (
+              {r === 0 ? (
+                "Any"
+              ) : (
                 <>
                   <Star className="h-3 w-3 fill-current" />
                   {r}
@@ -112,7 +111,9 @@ export function Filters({
           value={state.minPackage}
           onChange={(e) => update("minPackage", Number(e.target.value))}
           className="w-full accent-primary"
-          style={{ background: `linear-gradient(to right, var(--primary) ${packagePct}%, var(--secondary) ${packagePct}%)` }}
+          style={{
+            background: `linear-gradient(to right, var(--primary) ${packagePct}%, var(--secondary) ${packagePct}%)`,
+          }}
         />
         <div className="mt-1 flex justify-between text-[11px] text-muted-foreground">
           <span>₹0</span>
@@ -129,7 +130,9 @@ export function Filters({
           value={state.maxFees}
           onChange={(e) => update("maxFees", Number(e.target.value))}
           className="w-full accent-primary"
-          style={{ background: `linear-gradient(to right, var(--primary) ${feePct}%, var(--secondary) ${feePct}%)` }}
+          style={{
+            background: `linear-gradient(to right, var(--primary) ${feePct}%, var(--secondary) ${feePct}%)`,
+          }}
         />
         <div className="mt-1 flex justify-between text-[11px] text-muted-foreground">
           <span>₹50K</span>
@@ -150,7 +153,9 @@ export function Filters({
 function Section({ label, children }) {
   return (
     <div>
-      <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</h4>
+      <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </h4>
       {children}
     </div>
   );

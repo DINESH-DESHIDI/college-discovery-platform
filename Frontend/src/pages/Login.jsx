@@ -65,65 +65,69 @@ export default function Login() {
         </div>
       )}
       <form onSubmit={onSubmit} className="space-y-4">
-          <Field
-            label="Email"
-            icon={<Mail className="h-4 w-4" />}
-            type="email"
-            value={email}
-            onChange={setEmail}
-            placeholder="you@example.com"
-            error={errors.email}
-          />
-          <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Password
-            </label>
-            <div
-              className={`flex items-center gap-2 rounded-xl border bg-background px-3 transition-colors ${
-                errors.password
-                  ? "border-destructive"
-                  : "border-border focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20"
-              }`}
-            >
-              <Lock className="h-4 w-4 text-muted-foreground" />
-              <input
-                type={showPwd ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Your password"
-                className="flex-1 bg-transparent py-2.5 text-sm outline-none"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPwd((s) => !s)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-            {errors.password && <p className="mt-1 text-xs text-destructive">{errors.password}</p>}
-          </div>
-
-          <div className="flex items-center justify-between text-xs">
-            <label className="flex items-center gap-2 text-muted-foreground cursor-pointer">
-              <input type="checkbox" className="rounded border-border accent-primary cursor-pointer" /> Remember me
-            </label>
-            <a href="#" className="font-medium text-primary hover:underline">
-              Forgot password?
-            </a>
-          </div>
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full rounded-xl bg-gradient-primary py-3 text-sm font-semibold text-primary-foreground shadow-elegant transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
+        <Field
+          label="Email"
+          icon={<Mail className="h-4 w-4" />}
+          type="email"
+          value={email}
+          onChange={setEmail}
+          placeholder="you@example.com"
+          error={errors.email}
+        />
+        <div>
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Password
+          </label>
+          <div
+            className={`flex items-center gap-2 rounded-xl border bg-background px-3 transition-colors ${
+              errors.password
+                ? "border-destructive"
+                : "border-border focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20"
+            }`}
           >
-            {isSubmitting ? "Signing in..." : "Log in"}
-          </button>
+            <Lock className="h-4 w-4 text-muted-foreground" />
+            <input
+              type={showPwd ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Your password"
+              className="flex-1 bg-transparent py-2.5 text-sm outline-none"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPwd((s) => !s)}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+          {errors.password && <p className="mt-1 text-xs text-destructive">{errors.password}</p>}
+        </div>
 
-          <SocialDivider />
-          <SocialButtons />
-        </form>
+        <div className="flex items-center justify-between text-xs">
+          <label className="flex items-center gap-2 text-muted-foreground cursor-pointer">
+            <input
+              type="checkbox"
+              className="rounded border-border accent-primary cursor-pointer"
+            />{" "}
+            Remember me
+          </label>
+          <a href="#" className="font-medium text-primary hover:underline">
+            Forgot password?
+          </a>
+        </div>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full rounded-xl bg-gradient-primary py-3 text-sm font-semibold text-primary-foreground shadow-elegant transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isSubmitting ? "Signing in..." : "Log in"}
+        </button>
+
+        <SocialDivider />
+        <SocialButtons />
+      </form>
     </AuthShell>
   );
 }

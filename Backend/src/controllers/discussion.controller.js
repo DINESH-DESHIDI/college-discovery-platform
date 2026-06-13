@@ -10,8 +10,8 @@ const { sendSuccess, sendError, sendPaginated } = require("../utils/response");
 
 const questions = async (req, res, next) => {
   try {
-    const { page = 1, limit = 10, sort = "recent" } = req.query;
-    const result = await getQuestions({ page: Number(page), limit: Number(limit), sort });
+    const { page = 1, limit = 10, sort = "recent", collegeId } = req.query;
+    const result = await getQuestions({ page: Number(page), limit: Number(limit), sort, collegeId });
     return sendPaginated(res, result.questions, result.total, result.page, result.limit);
   } catch (err) {
     next(err);

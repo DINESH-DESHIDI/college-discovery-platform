@@ -37,11 +37,9 @@ app.use(
   })
 );
 
-// ─── Body parsers ──────────────────────────────────────────────────────────────
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// ─── Health check ──────────────────────────────────────────────────────────────
 app.get("/", (req, res) => {
   res.json({
     success: true,
@@ -60,7 +58,6 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-// ─── API routes ────────────────────────────────────────────────────────────────
 app.use("/api/auth", authRoutes);
 app.use("/api/colleges", collegeRoutes);
 app.use("/api/branches", branchRoutes);
@@ -71,7 +68,7 @@ app.use("/api/discussions", discussionRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/assistant", assistantRoutes);
 
-// ─── 404 handler ───────────────────────────────────────────────────────────────
+
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -79,17 +76,15 @@ app.use((req, res) => {
   });
 });
 
-// ─── Global error handler (must be last) ──────────────────────────────────────
+
 app.use(errorHandler);
 
-// ─── Start server ──────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`\n🚀 CollVerse API running on http://localhost:${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}\n`);
 });
 
-// ─── Graceful shutdown ─────────────────────────────────────────────────────────
 process.on("SIGTERM", async () => {
   console.log("SIGTERM received — shutting down gracefully...");
   await prisma.$disconnect();

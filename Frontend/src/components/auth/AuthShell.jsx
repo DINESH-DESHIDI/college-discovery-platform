@@ -15,7 +15,9 @@ export function AuthShell({ title, subtitle, children, footer }) {
           <h2 className="font-display text-3xl font-bold leading-tight">
             "CollVerse helped me shortlist 8 perfect-fit colleges in one evening."
           </h2>
-          <p className="mt-4 text-sm text-primary-foreground/80">— Ananya R., admitted to IIT Bombay '28</p>
+          <p className="mt-4 text-sm text-primary-foreground/80">
+            — Ananya R., admitted to IIT Bombay '28
+          </p>
         </div>
         <div className="grid grid-cols-3 gap-4 text-center text-xs">
           {[

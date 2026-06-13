@@ -43,7 +43,9 @@ export default function Signup() {
       await signup({ name, email, password });
       navigate("/colleges");
     } catch (error) {
-      setServerError(error.response?.data?.message || "Unable to create account. Please try again.");
+      setServerError(
+        error.response?.data?.message || "Unable to create account. Please try again.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -69,65 +71,65 @@ export default function Signup() {
       )}
       <form onSubmit={onSubmit} className="space-y-4">
         <Field
-            label="Full name"
-            icon={<User className="h-4 w-4" />}
-            type="text"
-            value={name}
-            onChange={setName}
-            placeholder="Aarav Sharma"
-            error={errors.name}
-          />
-          <Field
-            label="Email"
-            icon={<Mail className="h-4 w-4" />}
-            type="email"
-            value={email}
-            onChange={setEmail}
-            placeholder="you@example.com"
-            error={errors.email}
-          />
-          <Field
-            label="Password"
-            icon={<Lock className="h-4 w-4" />}
-            type="password"
-            value={password}
-            onChange={setPassword}
-            placeholder="At least 8 characters"
-            error={errors.password}
-          />
+          label="Full name"
+          icon={<User className="h-4 w-4" />}
+          type="text"
+          value={name}
+          onChange={setName}
+          placeholder="Aarav Sharma"
+          error={errors.name}
+        />
+        <Field
+          label="Email"
+          icon={<Mail className="h-4 w-4" />}
+          type="email"
+          value={email}
+          onChange={setEmail}
+          placeholder="you@example.com"
+          error={errors.email}
+        />
+        <Field
+          label="Password"
+          icon={<Lock className="h-4 w-4" />}
+          type="password"
+          value={password}
+          onChange={setPassword}
+          placeholder="At least 8 characters"
+          error={errors.password}
+        />
 
-          <label className="flex items-start gap-2 text-xs text-muted-foreground cursor-pointer">
-            <input
-              type="checkbox"
-              checked={agree}
-              onChange={(e) => setAgree(e.target.checked)}
-              className="mt-0.5 rounded border-border accent-primary cursor-pointer"
-            />
-            <span>
-              I agree to the{" "}
-              <a href="#" className="text-primary hover:underline">
-                Terms
-              </a>{" "}
-              and{" "}
-              <a href="#" className="text-primary hover:underline">
-                Privacy Policy
-              </a>
-              .
-            </span>
-          </label>
-          {errors.agree && <p className="-mt-3 text-xs text-destructive">{errors.agree}</p>}
+        <label className="flex items-start gap-2 text-xs text-muted-foreground cursor-pointer">
+          <input
+            type="checkbox"
+            checked={agree}
+            onChange={(e) => setAgree(e.target.checked)}
+            className="mt-0.5 rounded border-border accent-primary cursor-pointer"
+          />
+          <span>
+            I agree to the{" "}
+            <a href="#" className="text-primary hover:underline">
+              Terms
+            </a>{" "}
+            and{" "}
+            <a href="#" className="text-primary hover:underline">
+              Privacy Policy
+            </a>
+            .
+          </span>
+        </label>
+        {errors.agree && <p className="-mt-3 text-xs text-destructive">{errors.agree}</p>}
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full rounded-xl bg-gradient-primary py-3 text-sm font-semibold text-primary-foreground shadow-elegant transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isSubmitting ? "Creating account..." : "Create account"}
-          </button>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full rounded-xl bg-gradient-primary py-3 text-sm font-semibold text-primary-foreground shadow-elegant transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isSubmitting ? "Creating account..." : "Create account"}
+        </button>
 
-          <SocialDivider />
-          <SocialButtons />
-        </form>
+        <SocialDivider />
+        <SocialButtons />
+      </form>
     </AuthShell>
   );
 }

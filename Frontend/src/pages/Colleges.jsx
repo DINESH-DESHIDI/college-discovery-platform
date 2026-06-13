@@ -1,19 +1,34 @@
 import { useSearchParams } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
-import { Search, SlidersHorizontal, X, Grid3x3, ChevronLeft, ChevronRight, Loader2, AlertCircle, Building2, MapPin, GraduationCap } from "lucide-react";
-import { fetchColleges, fetchFilterOptions } from "@/utils/api";
+import {
+  Search,
+  SlidersHorizontal,
+  X,
+  Grid3x3,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  AlertCircle,
+  Building2,
+  MapPin,
+  GraduationCap,
+  Sparkles,
+} from "lucide-react";
+import { fetchColleges, fetchFilterOptions, fetchBranches } from "@/utils/api";
 import { Link } from "react-router-dom";
+import { EAMCET_CATEGORIES, GENDERS } from "@/data/colleges";
 
 const PAGE_SIZE = 20;
 
 // ─── College Card ─────────────────────────────────────────────────────────────
 function CollegeCard({ college }) {
-  const initials = college.instituteName
-    ?.split(" ")
-    .filter((w) => w.length > 2)
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("") || "??";
+  const initials =
+    college.instituteName
+      ?.split(" ")
+      .filter((w) => w.length > 2)
+      .slice(0, 2)
+      .map((w) => w[0])
+      .join("") || "??";
 
   return (
     <Link
@@ -92,24 +107,37 @@ export default function Colleges() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // ── State ──
-  const [colleges, setColleges]         = useState([]);
-  const [total, setTotal]               = useState(0);
-  const [totalPages, setTotalPages]     = useState(0);
-  const [page, setPage]                 = useState(() => parseInt(searchParams.get("page") || "1", 10));
-  const [loading, setLoading]           = useState(false);
-  const [error, setError]               = useState("");
-  const [searchTerm, setSearchTerm]     = useState(searchParams.get("search") || searchParams.get("q") || "");
+  const [colleges, setColleges] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [page, setPage] = useState(() => parseInt(searchParams.get("page") || "1", 10));
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get("search") || searchParams.get("q") || "",
+  );
   const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
-  const [collegeType, setCollegeType]   = useState(searchParams.get("collegeType") || "");
-  const [place, setPlace]               = useState(searchParams.get("place") || "");
-  const [sort, setSort]                 = useState(searchParams.get("sort") || "name");
-  const [filterOptions, setFilterOptions] = useState({ places: [], collegeTypes: [] });
-  const [filtersOpen, setFiltersOpen]   = useState(false);
+  const [collegeType, setCollegeType] = useState(searchParams.get("collegeType") || "");
+  const [place, setPlace] = useState(searchParams.get("place") || "");
+  const [sort, setSort] = useState(searchParams.get("sort") || "name");
 
-  // ── Load filter options once ──
+  // EAMCET Filters
+  const [rank, setRank] = useState(searchParams.get("rank") || "");
+  const [category, setCategory] = useState(searchParams.get("category") || "");
+  const [gender, setGender] = useState(searchParams.get("gender") || "");
+  const [branch, setBranch] = useState(searchParams.get("branch") || "");
+
+  const [filterOptions, setFilterOptions] = useState({ places: [], collegeTypes: [] });
+  const [branchesList, setBranchesList] = useState([]);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  // ── Load filter options and branches once ──
   useEffect(() => {
     fetchFilterOptions()
       .then((res) => setFilterOptions(res.data || { places: [], collegeTypes: [] }))
+      .catch(() => {});
+    fetchBranches()
+      .then((res) => setBranchesList(res.data || []))
       .catch(() => {});
     document.title = "Browse Colleges — CollVerse";
   }, []);
@@ -129,9 +157,13 @@ export default function Colleges() {
     setError("");
     try {
       const params = { page, limit: PAGE_SIZE, sort };
-      if (debouncedSearch) params.search      = debouncedSearch;
-      if (collegeType)     params.collegeType = collegeType;
-      if (place)           params.place       = place;
+      if (debouncedSearch) params.search = debouncedSearch;
+      if (collegeType) params.collegeType = collegeType;
+      if (place) params.place = place;
+      if (rank) params.rank = rank;
+      if (category) params.category = category;
+      if (gender) params.gender = gender;
+      if (branch) params.branch = branch;
 
       const res = await fetchColleges(params);
       setColleges(res.data || []);
@@ -140,18 +172,33 @@ export default function Colleges() {
 
       // Sync URL
       const urlParams = {};
-      if (page > 1)         urlParams.page        = String(page);
-      if (debouncedSearch)  urlParams.search       = debouncedSearch;
-      if (collegeType)      urlParams.collegeType  = collegeType;
-      if (place)            urlParams.place        = place;
-      if (sort !== "name")  urlParams.sort         = sort;
+      if (page > 1) urlParams.page = String(page);
+      if (debouncedSearch) urlParams.search = debouncedSearch;
+      if (collegeType) urlParams.collegeType = collegeType;
+      if (place) urlParams.place = place;
+      if (sort !== "name") urlParams.sort = sort;
+      if (rank) urlParams.rank = rank;
+      if (category) urlParams.category = category;
+      if (gender) urlParams.gender = gender;
+      if (branch) urlParams.branch = branch;
       setSearchParams(urlParams);
     } catch (err) {
       setError(err.userMessage || "Failed to load colleges.");
     } finally {
       setLoading(false);
     }
-  }, [page, debouncedSearch, collegeType, place, sort, setSearchParams]);
+  }, [
+    page,
+    debouncedSearch,
+    collegeType,
+    place,
+    sort,
+    rank,
+    category,
+    gender,
+    branch,
+    setSearchParams,
+  ]);
 
   useEffect(() => {
     loadColleges();
@@ -162,20 +209,24 @@ export default function Colleges() {
     setCollegeType("");
     setPlace("");
     setSort("name");
+    setRank("");
+    setCategory("");
+    setGender("");
+    setBranch("");
     setPage(1);
   };
 
-  const hasFilters = debouncedSearch || collegeType || place;
+  const hasFilters =
+    debouncedSearch || collegeType || place || rank || category || gender || branch;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:py-10 sm:px-6">
       {/* ── Header ── */}
       <div className="rounded-3xl border border-border bg-gradient-to-br from-primary/5 to-background p-5 sm:p-8">
-        <h1 className="font-display text-2xl font-bold sm:text-3xl">
-          Explore Colleges
-        </h1>
+        <h1 className="font-display text-2xl font-bold sm:text-3xl">Explore Colleges</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Browse {total > 0 ? total.toLocaleString() : "all"} verified EAMCET colleges with real cutoff data.
+          Browse {total > 0 ? total.toLocaleString() : "all"} verified EAMCET colleges with real
+          cutoff data.
         </p>
 
         {/* Search bar */}
@@ -226,12 +277,17 @@ export default function Colleges() {
               <select
                 id="filter-type"
                 value={collegeType}
-                onChange={(e) => { setCollegeType(e.target.value); setPage(1); }}
+                onChange={(e) => {
+                  setCollegeType(e.target.value);
+                  setPage(1);
+                }}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               >
                 <option value="">All Types</option>
                 {filterOptions.collegeTypes.map((t) => (
-                  <option key={t} value={t}>{t}</option>
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
                 ))}
               </select>
             </FilterGroup>
@@ -240,12 +296,89 @@ export default function Colleges() {
               <select
                 id="filter-place"
                 value={place}
-                onChange={(e) => { setPlace(e.target.value); setPage(1); }}
+                onChange={(e) => {
+                  setPlace(e.target.value);
+                  setPage(1);
+                }}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               >
                 <option value="">All Places</option>
                 {filterOptions.places.map((p) => (
-                  <option key={p} value={p}>{p}</option>
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </FilterGroup>
+
+            <FilterGroup label="EAMCET Rank">
+              <input
+                id="filter-rank"
+                type="number"
+                min="1"
+                placeholder="Enter EAMCET Rank"
+                value={rank}
+                onChange={(e) => {
+                  setRank(e.target.value);
+                  setPage(1);
+                }}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              />
+            </FilterGroup>
+
+            <FilterGroup label="Category">
+              <select
+                id="filter-category"
+                value={category}
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                  setPage(1);
+                }}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              >
+                <option value="">All Categories</option>
+                {EAMCET_CATEGORIES.map((c) => (
+                  <option key={c.value} value={c.value}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+            </FilterGroup>
+
+            <FilterGroup label="Gender">
+              <select
+                id="filter-gender"
+                value={gender}
+                onChange={(e) => {
+                  setGender(e.target.value);
+                  setPage(1);
+                }}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              >
+                <option value="">All Genders</option>
+                {GENDERS.map((g) => (
+                  <option key={g.value} value={g.value}>
+                    {g.label}
+                  </option>
+                ))}
+              </select>
+            </FilterGroup>
+
+            <FilterGroup label="Branch">
+              <select
+                id="filter-branch"
+                value={branch}
+                onChange={(e) => {
+                  setBranch(e.target.value);
+                  setPage(1);
+                }}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              >
+                <option value="">All Branches</option>
+                {branchesList.map((b) => (
+                  <option key={b.id} value={b.code}>
+                    {b.code} - {b.name}
+                  </option>
                 ))}
               </select>
             </FilterGroup>
@@ -254,7 +387,10 @@ export default function Colleges() {
               <select
                 id="filter-sort"
                 value={sort}
-                onChange={(e) => { setSort(e.target.value); setPage(1); }}
+                onChange={(e) => {
+                  setSort(e.target.value);
+                  setPage(1);
+                }}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               >
                 <option value="name">Name (A–Z)</option>
@@ -276,16 +412,22 @@ export default function Colleges() {
                 <span>Loading…</span>
               ) : (
                 <span>
-                  <strong className="text-foreground">{total.toLocaleString()}</strong> colleges found
+                  <strong className="text-foreground">{total.toLocaleString()}</strong> colleges
+                  found
                 </span>
               )}
             </div>
             <div className="flex items-center gap-2">
-              <label htmlFor="sort-select" className="text-xs text-muted-foreground">Sort:</label>
+              <label htmlFor="sort-select" className="text-xs text-muted-foreground">
+                Sort:
+              </label>
               <select
                 id="sort-select"
                 value={sort}
-                onChange={(e) => { setSort(e.target.value); setPage(1); }}
+                onChange={(e) => {
+                  setSort(e.target.value);
+                  setPage(1);
+                }}
                 className="rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               >
                 <option value="name">Name (A–Z)</option>
@@ -378,21 +520,29 @@ export default function Colleges() {
           <div className="absolute inset-y-0 right-0 flex w-full max-w-sm flex-col bg-card shadow-2xl transition-transform duration-300">
             <div className="flex items-center justify-between border-b border-border p-5">
               <h3 className="font-display text-lg font-semibold">Filters</h3>
-              <button onClick={() => setFiltersOpen(false)} className="rounded-lg p-2 hover:bg-secondary">
+              <button
+                onClick={() => setFiltersOpen(false)}
+                className="rounded-lg p-2 hover:bg-secondary"
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>
-            
+
             <div className="flex-1 overflow-y-auto p-5 space-y-5">
               <FilterGroup label="College Type">
                 <select
                   value={collegeType}
-                  onChange={(e) => { setCollegeType(e.target.value); setPage(1); }}
+                  onChange={(e) => {
+                    setCollegeType(e.target.value);
+                    setPage(1);
+                  }}
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none"
                 >
                   <option value="">All Types</option>
                   {filterOptions.collegeTypes.map((t) => (
-                    <option key={t} value={t}>{t}</option>
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
                   ))}
                 </select>
               </FilterGroup>
@@ -400,12 +550,85 @@ export default function Colleges() {
               <FilterGroup label="Place">
                 <select
                   value={place}
-                  onChange={(e) => { setPlace(e.target.value); setPage(1); }}
+                  onChange={(e) => {
+                    setPlace(e.target.value);
+                    setPage(1);
+                  }}
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none"
                 >
                   <option value="">All Places</option>
                   {filterOptions.places.map((p) => (
-                    <option key={p} value={p}>{p}</option>
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+              </FilterGroup>
+
+              <FilterGroup label="EAMCET Rank">
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="Enter EAMCET Rank"
+                  value={rank}
+                  onChange={(e) => {
+                    setRank(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none"
+                />
+              </FilterGroup>
+
+              <FilterGroup label="Category">
+                <select
+                  value={category}
+                  onChange={(e) => {
+                    setCategory(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none"
+                >
+                  <option value="">All Categories</option>
+                  {EAMCET_CATEGORIES.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
+              </FilterGroup>
+
+              <FilterGroup label="Gender">
+                <select
+                  value={gender}
+                  onChange={(e) => {
+                    setGender(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none"
+                >
+                  <option value="">All Genders</option>
+                  {GENDERS.map((g) => (
+                    <option key={g.value} value={g.value}>
+                      {g.label}
+                    </option>
+                  ))}
+                </select>
+              </FilterGroup>
+
+              <FilterGroup label="Branch">
+                <select
+                  value={branch}
+                  onChange={(e) => {
+                    setBranch(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none"
+                >
+                  <option value="">All Branches</option>
+                  {branchesList.map((b) => (
+                    <option key={b.id} value={b.code}>
+                      {b.code} - {b.name}
+                    </option>
                   ))}
                 </select>
               </FilterGroup>
@@ -414,7 +637,10 @@ export default function Colleges() {
             <div className="border-t border-border bg-background p-5 space-y-3 mt-auto">
               {hasFilters && (
                 <button
-                  onClick={() => { resetFilters(); setFiltersOpen(false); }}
+                  onClick={() => {
+                    resetFilters();
+                    setFiltersOpen(false);
+                  }}
                   className="w-full rounded-xl border border-border py-2.5 text-sm font-medium hover:border-primary"
                 >
                   Reset Filters

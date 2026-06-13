@@ -31,12 +31,13 @@ export default function AnalyticsDashboard() {
   }, [placeFilter, collegeTypeFilter]);
 
   const chartData = useMemo(
-    () => (data?.trends || []).map((row) => ({
-      year: row.year,
-      cutoffs: row.cutoffCount,
-      avgRank: row.averageClosingRank,
-    })),
-    [data]
+    () =>
+      (data?.trends || []).map((row) => ({
+        year: row.year,
+        cutoffs: row.cutoffCount,
+        avgRank: row.averageClosingRank,
+      })),
+    [data],
   );
 
   if (loading) {
@@ -48,11 +49,7 @@ export default function AnalyticsDashboard() {
   }
 
   if (error) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-24 text-center text-destructive">
-        {error}
-      </div>
-    );
+    return <div className="mx-auto max-w-2xl px-4 py-24 text-center text-destructive">{error}</div>;
   }
 
   const places = data?.filters?.places || [];
@@ -64,8 +61,12 @@ export default function AnalyticsDashboard() {
         <div className="rounded-3xl border border-border bg-card p-8 shadow-elegant">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Cutoff analytics</p>
-              <h1 className="mt-3 font-display text-3xl font-bold">EAMCET cutoff trends from imported data</h1>
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">
+                Cutoff analytics
+              </p>
+              <h1 className="mt-3 font-display text-3xl font-bold">
+                EAMCET cutoff trends from imported data
+              </h1>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <select
@@ -75,7 +76,9 @@ export default function AnalyticsDashboard() {
               >
                 <option value="">All places</option>
                 {places.map((place) => (
-                  <option key={place} value={place}>{place}</option>
+                  <option key={place} value={place}>
+                    {place}
+                  </option>
                 ))}
               </select>
               <select
@@ -85,7 +88,9 @@ export default function AnalyticsDashboard() {
               >
                 <option value="">All types</option>
                 {collegeTypes.map((type) => (
-                  <option key={type} value={type}>{type}</option>
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
                 ))}
               </select>
             </div>
@@ -105,7 +110,9 @@ export default function AnalyticsDashboard() {
 
         <div className="rounded-3xl border border-border bg-card p-8 shadow-elegant">
           <h2 className="text-lg font-semibold">Colleges with most cutoff data</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Based on imported EAMCET cutoff records.</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Based on imported EAMCET cutoff records.
+          </p>
           <ul className="mt-6 space-y-4">
             {(data?.topTrendingColleges || []).map((college) => (
               <li key={college.id} className="rounded-2xl border border-border p-4">

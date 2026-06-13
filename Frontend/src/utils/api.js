@@ -30,7 +30,7 @@ api.interceptors.response.use(
       err.userMessage = "Cannot connect to server.";
     }
     return Promise.reject(err);
-  }
+  },
 );
 
 // ── College API helpers ────────────────────────────────────────────────────────
@@ -45,8 +45,7 @@ export const fetchColleges = (params = {}) =>
 /**
  * Fetch a single college by id or instCode.
  */
-export const fetchCollege = (id) =>
-  api.get(`/api/colleges/${id}`).then((r) => r.data);
+export const fetchCollege = (id) => api.get(`/api/colleges/${id}`).then((r) => r.data);
 
 /**
  * Fetch cutoffs for a college.
@@ -59,8 +58,7 @@ export const fetchCollegeCutoffs = (id, params = {}) =>
 /**
  * Fetch distinct filter values (places, collegeTypes) for dropdowns.
  */
-export const fetchFilterOptions = () =>
-  api.get("/api/colleges/filters").then((r) => r.data);
+export const fetchFilterOptions = () => api.get("/api/colleges/filters").then((r) => r.data);
 
 /**
  * Predict eligible colleges based on EAMCET rank + category + gender.
@@ -72,7 +70,6 @@ export const fetchPredictions = (params = {}) =>
 /**
  * Fetch all branches.
  */
-export const fetchBranches = () =>
-  api.get("/api/branches").then((r) => r.data);
+export const fetchBranches = () => api.get("/api/branches").then((r) => r.data);
 
 export default api;

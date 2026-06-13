@@ -27,8 +27,8 @@ export default function Saved() {
       saved.map((id) =>
         fetchCollege(id)
           .then((res) => normalizeCollegeForCard(res.data))
-          .catch(() => null)
-      )
+          .catch(() => null),
+      ),
     )
       .then((results) => setItems(results.filter(Boolean)))
       .finally(() => setLoading(false));
@@ -39,9 +39,14 @@ export default function Saved() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold sm:text-3xl">Saved Colleges</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Your personal shortlist. {items.length} saved.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Your personal shortlist. {items.length} saved.
+          </p>
         </div>
-        <Link to="/colleges" className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:border-primary hover:text-primary">
+        <Link
+          to="/colleges"
+          className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:border-primary hover:text-primary"
+        >
           Discover more
         </Link>
       </div>
@@ -57,14 +62,19 @@ export default function Saved() {
             title="No saved colleges yet"
             description="Tap the heart icon on any college to save it to your shortlist."
             action={
-              <Link to="/colleges" className="rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-elegant">
+              <Link
+                to="/colleges"
+                className="rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-elegant"
+              >
                 Explore colleges
               </Link>
             }
           />
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((c) => <CollegeCard key={c.id} college={c} />)}
+            {items.map((c) => (
+              <CollegeCard key={c.id} college={c} />
+            ))}
           </div>
         )}
       </div>

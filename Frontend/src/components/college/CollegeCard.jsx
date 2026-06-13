@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
 import { MapPin, Heart, GitCompare, Building2, GraduationCap } from "lucide-react";
-import { getCollegeDisplayName, getCollegeLocation, getCollegeType, getCollegeShortName } from "@/utils/college";
+import {
+  getCollegeDisplayName,
+  getCollegeLocation,
+  getCollegeType,
+  getCollegeShortName,
+} from "@/utils/college";
 import { useSavedColleges } from "@/hooks/useSavedColleges";
 import { useCompare } from "@/hooks/useCompare";
 
@@ -54,7 +59,10 @@ export function CollegeCard({ college }) {
       </div>
 
       <div className="flex flex-1 flex-col p-4 sm:p-5">
-        <Link to={`/colleges/${college.id}`} className="line-clamp-2 font-display text-base font-semibold hover:text-primary">
+        <Link
+          to={`/colleges/${college.id}`}
+          className="line-clamp-2 font-display text-base font-semibold hover:text-primary"
+        >
           {displayName}
         </Link>
         <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -98,8 +106,8 @@ export function CollegeCard({ college }) {
               compared
                 ? "border-primary bg-primary/10 text-primary"
                 : canCompare
-                ? "border-border text-foreground hover:border-primary hover:text-primary"
-                : "border-border text-muted-foreground opacity-50"
+                  ? "border-border text-foreground hover:border-primary hover:text-primary"
+                  : "border-border text-muted-foreground opacity-50"
             }`}
             title={!canCompare ? "Compare list is full" : ""}
           >

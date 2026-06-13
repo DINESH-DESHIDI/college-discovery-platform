@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
-import { Plus, MessageCircle, ArrowRight, ThumbsUp, ArrowLeft, Send, Calendar, User, MessageSquare } from "lucide-react";
+import {
+  Plus,
+  MessageCircle,
+  ArrowRight,
+  ThumbsUp,
+  ArrowLeft,
+  Send,
+  Calendar,
+  User,
+  MessageSquare,
+} from "lucide-react";
 import api from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
 
@@ -7,7 +17,7 @@ export default function Community() {
   const { user, isAuthenticated } = useAuth();
   const [questions, setQuestions] = useState([]);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
-  
+
   // New Question Form State
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -79,7 +89,10 @@ export default function Community() {
       const response = await api.post("/api/discussions", {
         title,
         body,
-        tags: tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+        tags: tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean),
       });
       // Refresh question list
       await loadQuestions();
@@ -87,11 +100,12 @@ export default function Community() {
       setBody("");
       setTags("");
       setSuccessMessage("Your question was posted successfully.");
-      
+
       // Auto scroll to list
       document.getElementById("threads-section")?.scrollIntoView({ behavior: "smooth" });
     } catch (err) {
-      const message = err?.response?.data?.message || "Unable to post your question. Please try again.";
+      const message =
+        err?.response?.data?.message || "Unable to post your question. Please try again.";
       setError(message);
     } finally {
       setIsSubmitting(false);
@@ -114,7 +128,7 @@ export default function Community() {
       const response = await api.post(`/api/discussions/${selectedQuestion.id}/answers`, {
         body: newAnswerText,
       });
-      
+
       // Append the new answer directly to our state
       setSelectedQuestion((prev) => ({
         ...prev,
@@ -122,14 +136,14 @@ export default function Community() {
       }));
       setNewAnswerText("");
       setSuccessMessage("Your reply was posted successfully!");
-      
+
       // Update answers count in local list
       setQuestions((prevList) =>
         prevList.map((q) =>
           q.id === selectedQuestion.id
             ? { ...q, answers: [response.data.data, ...(q.answers || [])] }
-            : q
-        )
+            : q,
+        ),
       );
     } catch (err) {
       console.error(err);
@@ -147,12 +161,12 @@ export default function Community() {
     try {
       const response = await api.patch(`/api/discussions/answers/${answerId}/upvote`);
       const updatedAnswer = response.data.data;
-      
+
       // Update in selectedQuestion state
       setSelectedQuestion((prev) => ({
         ...prev,
         answers: prev.answers.map((ans) =>
-          ans.id === answerId ? { ...ans, upvotes: updatedAnswer.upvotes } : ans
+          ans.id === answerId ? { ...ans, upvotes: updatedAnswer.upvotes } : ans,
         ),
       }));
     } catch (err) {
@@ -189,7 +203,12 @@ export default function Community() {
         <article className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-elegant">
           <div className="flex flex-wrap gap-2 text-xs">
             {(selectedQuestion.tags || []).map((tag) => (
-              <span key={tag} className="rounded-full bg-primary/10 px-2.5 py-1 font-semibold text-primary">{tag}</span>
+              <span
+                key={tag}
+                className="rounded-full bg-primary/10 px-2.5 py-1 font-semibold text-primary"
+              >
+                {tag}
+              </span>
             ))}
           </div>
 
@@ -200,7 +219,9 @@ export default function Community() {
           <div className="mt-4 flex items-center gap-3 border-b border-border pb-6 text-sm text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <User className="h-4 w-4 text-primary" />
-              <span className="font-semibold text-foreground">{selectedQuestion.authorName || "Anonymous"}</span>
+              <span className="font-semibold text-foreground">
+                {selectedQuestion.authorName || "Anonymous"}
+              </span>
             </div>
             <span>•</span>
             <div className="flex items-center gap-1.5">
@@ -217,7 +238,8 @@ export default function Community() {
         {/* Answers list */}
         <section className="mt-8">
           <h2 className="font-display text-xl font-bold text-foreground flex items-center gap-2">
-            <MessageSquare className="h-5 w-5 text-primary" /> Replies ({selectedQuestion.answers?.length || 0})
+            <MessageSquare className="h-5 w-5 text-primary" /> Replies (
+            {selectedQuestion.answers?.length || 0})
           </h2>
 
           <div className="mt-4 space-y-4">
@@ -227,7 +249,10 @@ export default function Community() {
               </div>
             ) : (
               (selectedQuestion.answers || []).map((answer) => (
-                <div key={answer.id} className="rounded-3xl border border-border bg-card p-5 shadow-soft hover:border-primary/20 transition-all duration-300">
+                <div
+                  key={answer.id}
+                  className="rounded-3xl border border-border bg-card p-5 shadow-soft hover:border-primary/20 transition-all duration-300"
+                >
                   <div className="flex items-start justify-between gap-4">
                     <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-wrap leading-relaxed">
                       {answer.body}
@@ -241,7 +266,9 @@ export default function Community() {
                     </button>
                   </div>
                   <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground border-t border-border/40 pt-3">
-                    <span className="font-bold text-foreground">{answer.authorName || "Anonymous User"}</span>
+                    <span className="font-bold text-foreground">
+                      {answer.authorName || "Anonymous User"}
+                    </span>
                     <span>•</span>
                     <span>{new Date(answer.createdAt).toLocaleDateString()}</span>
                   </div>
@@ -270,7 +297,13 @@ export default function Community() {
                   disabled={isSubmittingAnswer}
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-elegant hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-75"
                 >
-                  {isSubmittingAnswer ? "Posting reply..." : <><Send className="h-4 w-4" /> Reply</>}
+                  {isSubmittingAnswer ? (
+                    "Posting reply..."
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" /> Reply
+                    </>
+                  )}
                 </button>
               </form>
             ) : (
@@ -292,9 +325,12 @@ export default function Community() {
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
               <MessageCircle className="h-3 w-3" /> Community Discussions
             </div>
-            <h1 className="mt-4 font-display text-3xl font-bold sm:text-4xl">Ask, answer, and learn from other students</h1>
+            <h1 className="mt-4 font-display text-3xl font-bold sm:text-4xl">
+              Ask, answer, and learn from other students
+            </h1>
             <p className="mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
-              Join simplified discussion threads to get help on rank, college fit, placements, and admission strategy.
+              Join simplified discussion threads to get help on rank, college fit, placements, and
+              admission strategy.
             </p>
           </div>
           <div className="rounded-3xl bg-background p-5 border border-border shadow-soft flex items-center gap-3 text-sm text-muted-foreground sm:max-w-xs">
@@ -304,8 +340,13 @@ export default function Community() {
         </div>
 
         {/* Submit Question Form */}
-        <form onSubmit={onSubmit} className="mt-8 grid gap-4 rounded-3xl border border-border bg-background p-6">
-          <h2 className="font-display text-lg font-bold text-foreground">Have a question? Ask the community</h2>
+        <form
+          onSubmit={onSubmit}
+          className="mt-8 grid gap-4 rounded-3xl border border-border bg-background p-6"
+        >
+          <h2 className="font-display text-lg font-bold text-foreground">
+            Have a question? Ask the community
+          </h2>
           {error && (
             <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 animate-pulse">
               {error}
@@ -363,7 +404,9 @@ export default function Community() {
         <section id="threads-section" className="mt-10">
           <div className="flex items-center justify-between gap-3 border-b border-border pb-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Live discussions</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                Live discussions
+              </p>
               <h2 className="mt-2 text-2xl font-bold">Most active conversations</h2>
             </div>
             <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
@@ -388,19 +431,30 @@ export default function Community() {
                 >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <h3 className="text-lg font-bold text-foreground hover:text-primary transition-colors cursor-pointer" onClick={() => viewDiscussionDetail(question.id)}>
+                      <h3
+                        className="text-lg font-bold text-foreground hover:text-primary transition-colors cursor-pointer"
+                        onClick={() => viewDiscussionDetail(question.id)}
+                      >
                         {question.title}
                       </h3>
-                      <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{question.body}</p>
+                      <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
+                        {question.body}
+                      </p>
                       <div className="mt-3 flex flex-wrap gap-2 text-xs">
                         {(question.tags || []).map((tag) => (
-                          <span key={tag} className="rounded-full border border-border/80 px-2 py-0.5 font-semibold text-muted-foreground">{tag}</span>
+                          <span
+                            key={tag}
+                            className="rounded-full border border-border/80 px-2 py-0.5 font-semibold text-muted-foreground"
+                          >
+                            {tag}
+                          </span>
                         ))}
                       </div>
                     </div>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground shrink-0 mt-2 sm:mt-0">
                       <span className="flex items-center gap-1 font-semibold text-primary/80">
-                        <MessageSquare className="h-4 w-4" /> {question.answers?.length ?? 0} answers
+                        <MessageSquare className="h-4 w-4" /> {question.answers?.length ?? 0}{" "}
+                        answers
                       </span>
                       <span>By {question.authorName || "Anonymous"}</span>
                     </div>
@@ -414,9 +468,13 @@ export default function Community() {
                       View discussion <ArrowRight className="h-4 w-4" />
                     </button>
                     {question.answers?.length > 0 ? (
-                      <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-400 px-3 py-1 text-xs font-semibold">Active</span>
+                      <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-400 px-3 py-1 text-xs font-semibold">
+                        Active
+                      </span>
                     ) : (
-                      <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">Unanswered</span>
+                      <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
+                        Unanswered
+                      </span>
                     )}
                   </div>
                 </article>

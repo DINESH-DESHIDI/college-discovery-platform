@@ -16,13 +16,15 @@ export function getCollegeType(college) {
 export function getCollegeShortName(college) {
   if (college?.shortName) return college.shortName;
   const name = getCollegeDisplayName(college);
-  return name
-    .split(" ")
-    .filter((w) => w.length > 2)
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase() || "CV";
+  return (
+    name
+      .split(" ")
+      .filter((w) => w.length > 2)
+      .slice(0, 2)
+      .map((w) => w[0])
+      .join("")
+      .toUpperCase() || "CV"
+  );
 }
 
 export function normalizeCollegeForCard(college) {

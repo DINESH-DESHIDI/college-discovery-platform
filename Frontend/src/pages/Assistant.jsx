@@ -34,8 +34,12 @@ export default function Assistant() {
       <div className="rounded-3xl border border-border bg-card p-8 shadow-elegant">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">AI Assistant</p>
-            <h1 className="mt-3 font-display text-3xl font-bold sm:text-4xl">Ask about colleges, rank, fees or placements</h1>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">
+              AI Assistant
+            </p>
+            <h1 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
+              Ask about colleges, rank, fees or placements
+            </h1>
             <p className="mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
               Get instant guidance from the assistant using real college data and admission trends.
             </p>
@@ -45,7 +49,10 @@ export default function Assistant() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 grid gap-4 rounded-3xl border border-border bg-background p-6">
+        <form
+          onSubmit={handleSubmit}
+          className="mt-8 grid gap-4 rounded-3xl border border-border bg-background p-6"
+        >
           <label className="block text-sm font-medium text-foreground">
             Ask your question
             <textarea
@@ -66,11 +73,15 @@ export default function Assistant() {
         </form>
 
         {loading && (
-          <div className="mt-6 rounded-3xl bg-background p-6 text-sm text-muted-foreground">Thinking... please wait.</div>
+          <div className="mt-6 rounded-3xl bg-background p-6 text-sm text-muted-foreground">
+            Thinking... please wait.
+          </div>
         )}
 
         {error && (
-          <div className="mt-6 rounded-3xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">{error}</div>
+          <div className="mt-6 rounded-3xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+            {error}
+          </div>
         )}
 
         {answer && (

@@ -1,5 +1,20 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ArrowRight, Sparkles, TrendingUp, Shield, Users, Cpu, Briefcase, Stethoscope, Scale, Palette, BookOpen, FlaskConical, ChevronRight } from "lucide-react";
+import {
+  Search,
+  ArrowRight,
+  Sparkles,
+  TrendingUp,
+  Shield,
+  Users,
+  Cpu,
+  Briefcase,
+  Stethoscope,
+  Scale,
+  Palette,
+  BookOpen,
+  FlaskConical,
+  ChevronRight,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { courseCategories } from "@/data/colleges";
 import { CollegeCard, CollegeCardSkeleton } from "@/components/college/CollegeCard";
@@ -43,14 +58,17 @@ export default function Home() {
               Trusted by 2M+ aspiring students
             </span>
             <h1 className="mt-4 font-display text-3xl font-bold leading-tight tracking-tight sm:mt-5 sm:text-5xl lg:text-6xl">
-              Find the college that{" "}
-              <span className="text-gradient">shapes your future</span>
+              Find the college that <span className="text-gradient">shapes your future</span>
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-sm text-muted-foreground sm:mt-5 sm:text-base md:text-lg">
-              Compare 10,000+ colleges with verified data on fees, placements, rankings and real student reviews — all in one place.
+              Compare 10,000+ colleges with verified data on fees, placements, rankings and real
+              student reviews — all in one place.
             </p>
 
-            <form onSubmit={onSearch} className="mx-auto mt-6 flex max-w-2xl flex-col items-center gap-3 rounded-2xl border border-border bg-background p-2 shadow-elegant sm:mt-8 sm:flex-row sm:gap-2">
+            <form
+              onSubmit={onSearch}
+              className="mx-auto mt-6 flex max-w-2xl flex-col items-center gap-3 rounded-2xl border border-border bg-background p-2 shadow-elegant sm:mt-8 sm:flex-row sm:gap-2"
+            >
               <div className="flex w-full flex-1 items-center gap-2 px-3 sm:w-auto">
                 <Search className="h-5 w-5 text-muted-foreground" />
                 <input
@@ -60,7 +78,10 @@ export default function Home() {
                   className="w-full bg-transparent py-2.5 text-sm outline-none placeholder:text-muted-foreground"
                 />
               </div>
-              <button type="submit" className="w-full rounded-xl bg-gradient-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-elegant transition-transform hover:-translate-y-0.5 sm:w-auto sm:py-2.5">
+              <button
+                type="submit"
+                className="w-full rounded-xl bg-gradient-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-elegant transition-transform hover:-translate-y-0.5 sm:w-auto sm:py-2.5"
+              >
                 Search
               </button>
             </form>
@@ -68,7 +89,11 @@ export default function Home() {
             <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-[10px] sm:text-xs text-muted-foreground sm:mt-5">
               <span>Popular:</span>
               {["IIT Bombay", "IIM Ahmedabad", "AIIMS Delhi", "BITS Pilani"].map((t) => (
-                <Link key={t} to={`/colleges?q=${encodeURIComponent(t)}`} className="rounded-full border border-border bg-background/60 px-3 py-1 hover:border-primary hover:text-primary">
+                <Link
+                  key={t}
+                  to={`/colleges?q=${encodeURIComponent(t)}`}
+                  className="rounded-full border border-border bg-background/60 px-3 py-1 hover:border-primary hover:text-primary"
+                >
                   {t}
                 </Link>
               ))}
@@ -78,13 +103,18 @@ export default function Home() {
           {/* Stats */}
           <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:mt-16 md:grid-cols-4">
             {[
-              { label: "Colleges", value: totalColleges > 0 ? totalColleges.toLocaleString() : "163+" },
+              {
+                label: "Colleges",
+                value: totalColleges > 0 ? totalColleges.toLocaleString() : "163+",
+              },
               { label: "Courses", value: "850+" },
               { label: "Cities", value: "320+" },
               { label: "Reviews", value: "2M+" },
             ].map((s) => (
               <div key={s.label} className="bg-card p-4 text-center sm:p-6">
-                <div className="font-display text-xl font-bold sm:text-2xl md:text-3xl">{s.value}</div>
+                <div className="font-display text-xl font-bold sm:text-2xl md:text-3xl">
+                  {s.value}
+                </div>
                 <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
               </div>
             ))}
@@ -113,7 +143,9 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="font-semibold">{c.name}</div>
-                  <div className="text-xs text-muted-foreground">{c.count.toLocaleString()} colleges</div>
+                  <div className="text-xs text-muted-foreground">
+                    {c.count.toLocaleString()} colleges
+                  </div>
                 </div>
                 <ChevronRight className="absolute right-4 top-5 h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
               </Link>
@@ -130,7 +162,10 @@ export default function Home() {
             title="Top-ranked colleges of 2025"
             subtitle="Hand-picked institutions with stellar academics and placements."
           />
-          <Link to="/colleges" className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:gap-2 sm:inline-flex">
+          <Link
+            to="/colleges"
+            className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:gap-2 sm:inline-flex"
+          >
             View all <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -145,11 +180,26 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-20">
         <div className="grid gap-6 md:grid-cols-3">
           {[
-            { icon: Shield, title: "Verified Data", text: "Every fee, placement and ranking figure is independently verified for accuracy." },
-            { icon: TrendingUp, title: "Smart Comparison", text: "Compare up to 4 colleges side-by-side across 20+ data points in seconds." },
-            { icon: Users, title: "Real Reviews", text: "Authentic experiences from current students and verified alumni — no fluff." },
+            {
+              icon: Shield,
+              title: "Verified Data",
+              text: "Every fee, placement and ranking figure is independently verified for accuracy.",
+            },
+            {
+              icon: TrendingUp,
+              title: "Smart Comparison",
+              text: "Compare up to 4 colleges side-by-side across 20+ data points in seconds.",
+            },
+            {
+              icon: Users,
+              title: "Real Reviews",
+              text: "Authentic experiences from current students and verified alumni — no fluff.",
+            },
           ].map((f) => (
-            <div key={f.title} className="rounded-2xl border border-border bg-card p-7 transition-all hover:-translate-y-1 hover:shadow-elegant">
+            <div
+              key={f.title}
+              className="rounded-2xl border border-border bg-card p-7 transition-all hover:-translate-y-1 hover:shadow-elegant"
+            >
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground shadow-elegant">
                 <f.icon className="h-5 w-5" />
               </div>
@@ -175,15 +225,24 @@ export default function Home() {
         <div className="relative overflow-hidden rounded-3xl bg-gradient-primary p-8 text-primary-foreground sm:p-10 lg:p-14">
           <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
           <div className="relative max-w-2xl">
-            <h2 className="font-display text-2xl font-bold sm:text-3xl lg:text-4xl">Ready to take the next step?</h2>
+            <h2 className="font-display text-2xl font-bold sm:text-3xl lg:text-4xl">
+              Ready to take the next step?
+            </h2>
             <p className="mt-3 text-primary-foreground/80">
-              Create a free account, save your shortlist, and get personalized college recommendations.
+              Create a free account, save your shortlist, and get personalized college
+              recommendations.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link to="/signup" className="w-full rounded-xl bg-background px-5 py-3 text-center text-sm font-semibold text-foreground shadow-elegant transition-transform hover:-translate-y-0.5 sm:w-auto">
+              <Link
+                to="/signup"
+                className="w-full rounded-xl bg-background px-5 py-3 text-center text-sm font-semibold text-foreground shadow-elegant transition-transform hover:-translate-y-0.5 sm:w-auto"
+              >
                 Get started free
               </Link>
-              <Link to="/colleges" className="w-full rounded-xl border border-white/30 px-5 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-white/10 sm:w-auto">
+              <Link
+                to="/colleges"
+                className="w-full rounded-xl border border-white/30 px-5 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-white/10 sm:w-auto"
+              >
                 Browse colleges
               </Link>
             </div>
@@ -199,7 +258,11 @@ function SectionHead({ eyebrow, title, subtitle }) {
     <div>
       <div className="text-xs font-semibold uppercase tracking-wider text-primary">{eyebrow}</div>
       <h2 className="mt-2 font-display text-xl font-bold sm:text-2xl md:text-3xl">{title}</h2>
-      {subtitle && <p className="mt-2 max-w-2xl text-xs text-muted-foreground sm:text-sm md:text-base">{subtitle}</p>}
+      {subtitle && (
+        <p className="mt-2 max-w-2xl text-xs text-muted-foreground sm:text-sm md:text-base">
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 }

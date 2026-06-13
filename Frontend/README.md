@@ -69,6 +69,7 @@ src/
 ## Key Features Explained
 
 ### Per-User State (Fixed)
+
 - Saved colleges and compare lists are now isolated per user account
 - Guest (logged out) state is separate from authenticated user state
 - Each account has independent lists on the same browser
@@ -76,6 +77,7 @@ src/
 - Logout clears guest state; login loads user's data
 
 ### Authentication
+
 - Token-based JWT authentication
 - Stored in localStorage (STORAGE_KEY: `collverse_auth`)
 - Auto-logout on invalid token

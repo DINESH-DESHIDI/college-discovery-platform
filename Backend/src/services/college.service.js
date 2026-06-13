@@ -24,7 +24,7 @@ const COLLEGE_DETAIL_INCLUDE = {
  * Build Prisma `where` clause from query params.
  * Searches across instituteName, place, districtCode, collegeType, affiliatedTo.
  */
-const buildWhereClause = ({ search, q, collegeType, place, districtCode }) => {
+const buildWhereClause = ({ search, q, collegeType, place, districtCode, rank, category, gender, branch }) => {
   const where = {};
   const term = (search || q || "").trim();
   if (term) {
@@ -38,16 +38,48 @@ const buildWhereClause = ({ search, q, collegeType, place, districtCode }) => {
     ];
   }
 
-  if (collegeType && collegeType !== "All") {
+  if (collegeType && collegeType !== "All" && collegeType !== "") {
     where.collegeType = { contains: collegeType, mode: "insensitive" };
   }
 
-  if (place && place !== "All") {
+  if (place && place !== "All" && place !== "") {
     where.place = { contains: place, mode: "insensitive" };
   }
 
-  if (districtCode && districtCode !== "All") {
+  if (districtCode && districtCode !== "All" && districtCode !== "") {
     where.districtCode = { equals: districtCode, mode: "insensitive" };
+  }
+
+  // Advanced cutoff filter mapping
+  const cutoffFilter = {};
+  let hasCutoffFilter = false;
+
+  if (rank) {
+    cutoffFilter.closingRank = { gte: parseInt(rank, 10) };
+    hasCutoffFilter = true;
+  }
+  if (category && category !== "All" && category !== "") {
+    cutoffFilter.category = category.toUpperCase().replace(/\s+/g, "_");
+    hasCutoffFilter = true;
+  }
+  if (gender && gender !== "All" && gender !== "") {
+    cutoffFilter.gender = gender.toUpperCase();
+    hasCutoffFilter = true;
+  }
+  if (branch && branch !== "All" && branch !== "") {
+    cutoffFilter.branch = {
+      OR: [
+        { code: { equals: branch, mode: "insensitive" } },
+        { name: { contains: branch, mode: "insensitive" } }
+      ]
+    };
+    hasCutoffFilter = true;
+  }
+
+  if (hasCutoffFilter) {
+    where.cutoffs = {
+      some: cutoffFilter
+    };
   }
 
   return where;
@@ -105,6 +137,16 @@ const getCollegeById = async (idOrCode) => {
     include: COLLEGE_DETAIL_INCLUDE,
   });
 
+  if (college) {
+    const placement = await prisma.placement.findUnique({
+      where: { collegeId: college.id }
+    });
+    return {
+      ...college,
+      placement: placement || null
+    };
+  }
+
   return college;
 };
 
@@ -139,19 +181,26 @@ const getCollegeCutoffs = async (collegeId, { year, category, gender } = {}) => 
 const getCollegesForComparison = async (ids) => {
   if (!ids || ids.length === 0) return [];
 
-  const [colleges, rankingsMap] = await Promise.all([
+  const [colleges, rankingsMap, placements] = await Promise.all([
     prisma.college.findMany({
       where: { id: { in: ids } },
       include: COLLEGE_DETAIL_INCLUDE,
     }),
     getGlobalRankings(),
+    prisma.placement.findMany({
+      where: { collegeId: { in: ids } }
+    })
   ]);
+
+  const placementMap = new Map(placements.map((p) => [p.collegeId, p]));
 
   return colleges.map((college) => {
     const rankData = rankingsMap.get(college.id);
+    const placementData = placementMap.get(college.id);
     return {
       ...college,
       ranking: rankData || null,
+      placement: placementData || null,
     };
   });
 };
@@ -186,19 +235,47 @@ const getDistinctCollegeTypes = async () => {
  * Predict eligible colleges based on EAMCET rank, category, gender.
  * Queries real Cutoff data: finds colleges where closingRank >= userRank.
  */
-const predictColleges = async ({ rank, category, gender, year = 2025 }) => {
+const predictColleges = async ({ rank, category, gender, year = 2025, branch, collegeType, place }) => {
   const userRank = Math.max(1, parseInt(rank, 10) || 1);
   const cat = (category || "OC").toUpperCase().replace(/\s+/g, "_");
   const gen = (gender || "BOYS").toUpperCase();
 
-  // Find all cutoffs where user's rank is within the closing rank
+  const where = {
+    year,
+    category: cat,
+    gender: gen,
+    closingRank: { gte: Math.round(userRank * 0.7) },
+  };
+
+  if (branch && branch !== "All" && branch !== "") {
+    where.branch = {
+      code: { equals: branch, mode: "insensitive" }
+    };
+  }
+
+  const collegeFilter = {};
+  let hasCollegeFilter = false;
+
+  if (collegeType && collegeType !== "All" && collegeType !== "") {
+    collegeFilter.collegeType = { contains: collegeType, mode: "insensitive" };
+    hasCollegeFilter = true;
+  }
+
+  if (place && place !== "All" && place !== "") {
+    collegeFilter.OR = [
+      { place: { contains: place, mode: "insensitive" } },
+      { districtCode: { equals: place, mode: "insensitive" } }
+    ];
+    hasCollegeFilter = true;
+  }
+
+  if (hasCollegeFilter) {
+    where.college = collegeFilter;
+  }
+
+  // Find all cutoffs matching user's constraints
   const cutoffs = await prisma.cutoff.findMany({
-    where: {
-      year,
-      category: cat,
-      gender: gen,
-      closingRank: { gte: userRank },
-    },
+    where,
     include: {
       college: {
         select: {
@@ -214,26 +291,52 @@ const predictColleges = async ({ rank, category, gender, year = 2025 }) => {
       branch: { select: { id: true, code: true, name: true } },
     },
     orderBy: { closingRank: "asc" },
-    take: 50,
+    take: 100,
   });
 
-  // Group by college, keep best (lowest closing rank) branch per college
+  const calculateProbability = (uRank, cRank) => {
+    if (!cRank) return 0;
+    const exponent = (uRank - cRank) / (cRank * 0.15);
+    const prob = Math.round(100 / (1 + Math.exp(exponent)));
+    return Math.min(99, Math.max(1, prob));
+  };
+
+  // Group by college
   const collegeMap = new Map();
   for (const cutoff of cutoffs) {
     const cid = cutoff.collegeId;
+    const prob = calculateProbability(userRank, cutoff.closingRank);
+    
+    let chance = "Low";
+    if (prob >= 75) chance = "High";
+    else if (prob >= 40) chance = "Medium";
+
     if (!collegeMap.has(cid)) {
-      collegeMap.set(cid, { college: cutoff.college, branches: [], bestRank: cutoff.closingRank });
+      collegeMap.set(cid, {
+        college: cutoff.college,
+        branches: [],
+        bestRank: cutoff.closingRank,
+        bestProbability: prob,
+        bestChance: chance,
+      });
     }
     const entry = collegeMap.get(cid);
-    entry.branches.push({ branch: cutoff.branch, closingRank: cutoff.closingRank });
+    entry.branches.push({
+      branch: cutoff.branch,
+      closingRank: cutoff.closingRank,
+      admissionProbability: prob,
+      chance,
+    });
+    
     if (cutoff.closingRank < entry.bestRank) entry.bestRank = cutoff.closingRank;
+    if (prob > entry.bestProbability) {
+      entry.bestProbability = prob;
+      entry.bestChance = chance;
+    }
   }
 
   const results = Array.from(collegeMap.values())
-    .sort((a, b) => a.bestRank - b.bestRank)
-    .map(({ college, branches, bestRank }) => {
-      const gap = bestRank - userRank;
-      const chance = gap <= 0 ? "Low" : gap <= 500 ? "High" : gap <= 2000 ? "Medium" : "Low";
+    .map(({ college, branches, bestRank, bestProbability, bestChance }) => {
       return {
         id:            college.id,
         instCode:      college.instCode,
@@ -242,12 +345,15 @@ const predictColleges = async ({ rank, category, gender, year = 2025 }) => {
         collegeType:   college.collegeType,
         affiliatedTo:  college.affiliatedTo,
         bestClosingRank: bestRank,
-        chance,
+        admissionProbability: bestProbability,
+        chance: bestChance,
         category: cat,
         gender: gen,
-        branches: branches.sort((a, b) => a.closingRank - b.closingRank).slice(0, 5),
+        branches: branches.sort((a, b) => b.admissionProbability - a.admissionProbability).slice(0, 5),
       };
-    });
+    })
+    // Sort colleges by best probability descending (highest chance of getting in first)
+    .sort((a, b) => b.admissionProbability - a.admissionProbability);
 
   return results;
 };
